@@ -1,13 +1,6 @@
 import Link from "next/link"
 
 const footerLinks = {
-  Product: [
-    { label: "Overview", href: "/product" },
-    { label: "SCADA Pack", href: "/product#scada" },
-    { label: "ERP Pack", href: "/product#erp" },
-    { label: "CRM Pack", href: "/product#crm" },
-    { label: "Integrations", href: "/product#integrations" },
-  ],
   "Use Cases": [
     { label: "Troubleshooting", href: "/use-cases#troubleshooting" },
     { label: "Root Cause Analysis", href: "/use-cases#root-cause" },
