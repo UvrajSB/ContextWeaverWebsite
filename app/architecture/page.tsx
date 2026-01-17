@@ -82,11 +82,41 @@ export default function ArchitecturePage() {
           <div className="max-w-6xl mx-auto">
             <div className="bg-card rounded-3xl border border-border p-8 overflow-x-auto">
               <svg
-                viewBox="0 0 900 400"
+                viewBox="0 0 920 420"
                 className="w-full min-w-[700px] h-auto"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                {/* Defs for arrows and patterns */}
+                <defs>
+                  <marker
+                    id="arrowhead"
+                    markerWidth="8"
+                    markerHeight="6"
+                    refX="7"
+                    refY="3"
+                    orient="auto"
+                  >
+                    <polygon points="0 0, 8 3, 0 6" className="fill-foreground/40" />
+                  </marker>
+                  <marker
+                    id="arrowheadBold"
+                    markerWidth="8"
+                    markerHeight="6"
+                    refX="7"
+                    refY="3"
+                    orient="auto"
+                  >
+                    <polygon points="0 0, 8 3, 0 6" className="fill-foreground" />
+                  </marker>
+                  <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="0.5" className="fill-foreground/10" />
+                  </pattern>
+                </defs>
+
+                {/* Background subtle pattern */}
+                <rect width="920" height="420" fill="url(#dotPattern)" />
+
                 {/* Sources */}
                 <g>
                   <rect
@@ -178,47 +208,67 @@ export default function ArchitecturePage() {
                 <g>
                   <rect
                     x="180"
-                    y="140"
+                    y="130"
                     width="80"
-                    height="120"
+                    height="140"
                     rx="16"
                     className="fill-secondary stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="220" y="190" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
+                  <text x="220" y="185" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
                     Connectors
                   </text>
-                  <text x="220" y="210" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
+                  <text x="220" y="205" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
                     Secure
                   </text>
-                  <text x="220" y="225" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
+                  <text x="220" y="220" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
                     Read-only
                   </text>
+                  {/* Small lock icon */}
+                  <circle cx="220" cy="245" r="8" className="fill-foreground/10" />
+                  <rect x="216" y="243" width="8" height="6" rx="1" className="fill-foreground/40" />
+                  <path d="M217 243v-2a3 3 0 0 1 6 0v2" className="stroke-foreground/40" strokeWidth="1.5" fill="none" />
                 </g>
 
                 {/* Connection lines - Sources to Connectors */}
-                <g className="stroke-border" strokeWidth="1">
-                  <line x1="140" y1="100" x2="180" y2="170" />
-                  <line x1="140" y1="150" x2="180" y2="185" />
-                  <line x1="140" y1="200" x2="180" y2="200" />
-                  <line x1="140" y1="250" x2="180" y2="215" />
-                  <line x1="140" y1="300" x2="180" y2="230" />
+                <g className="stroke-foreground/30" strokeWidth="1">
+                  <line x1="125" y1="100" x2="180" y2="160" />
+                  <line x1="125" y1="150" x2="180" y2="180" />
+                  <line x1="140" y1="200" x2="180" y2="200" markerEnd="url(#arrowhead)" />
+                  <line x1="125" y1="250" x2="180" y2="220" />
+                  <line x1="125" y1="300" x2="180" y2="240" />
+                  {/* Connection dots at source ends */}
+                  <circle cx="125" cy="100" r="2" className="fill-foreground/30" />
+                  <circle cx="125" cy="150" r="2" className="fill-foreground/30" />
+                  <circle cx="140" cy="200" r="2" className="fill-foreground/30" />
+                  <circle cx="125" cy="250" r="2" className="fill-foreground/30" />
+                  <circle cx="125" cy="300" r="2" className="fill-foreground/30" />
                 </g>
 
                 {/* Context Layer - Central */}
                 <g>
                   <rect
                     x="300"
-                    y="60"
+                    y="50"
                     width="200"
-                    height="280"
+                    height="300"
                     rx="20"
                     className="fill-foreground/5 stroke-foreground"
                     strokeWidth="2"
                   />
+                  {/* Inner glow effect */}
+                  <rect
+                    x="305"
+                    y="55"
+                    width="190"
+                    height="290"
+                    rx="17"
+                    className="fill-none stroke-foreground/10"
+                    strokeWidth="1"
+                  />
                   <text
                     x="400"
-                    y="40"
+                    y="35"
                     textAnchor="middle"
                     className="fill-foreground text-sm font-semibold"
                     fontSize="14"
@@ -228,87 +278,91 @@ export default function ArchitecturePage() {
 
                   <rect
                     x="320"
-                    y="85"
+                    y="75"
                     width="160"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="400" y="107" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="400" y="99" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Asset Model
                   </text>
 
                   <rect
                     x="320"
-                    y="130"
+                    y="123"
                     width="160"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="400" y="152" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="400" y="147" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Semantic Metrics
                   </text>
 
                   <rect
                     x="320"
-                    y="175"
+                    y="171"
                     width="160"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="400" y="197" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="400" y="195" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Lineage & Relationships
                   </text>
 
                   <rect
                     x="320"
-                    y="220"
+                    y="219"
                     width="160"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="400" y="242" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="400" y="243" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Memory & Learnings
                   </text>
 
                   <rect
                     x="320"
-                    y="265"
+                    y="267"
                     width="160"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="400" y="287" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="400" y="291" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Knowledge Index
                   </text>
+
+                  {/* Vertical connecting line inside context layer */}
+                  <line x1="310" y1="94" x2="310" y2="286" className="stroke-foreground/10" strokeWidth="1" strokeDasharray="2 4" />
                 </g>
 
                 {/* Connection - Connectors to Context */}
-                <line x1="260" y1="200" x2="300" y2="200" className="stroke-border" strokeWidth="1" />
+                <line x1="260" y1="200" x2="300" y2="200" className="stroke-foreground/40" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+                <circle cx="260" cy="200" r="3" className="fill-foreground/30" />
 
                 {/* Agents */}
                 <g>
                   <rect
-                    x="540"
-                    y="100"
+                    x="545"
+                    y="90"
                     width="120"
-                    height="200"
+                    height="220"
                     rx="16"
                     className="fill-secondary stroke-border"
                     strokeWidth="1"
                   />
                   <text
-                    x="600"
-                    y="40"
+                    x="605"
+                    y="35"
                     textAnchor="middle"
                     className="fill-foreground text-sm font-semibold"
                     fontSize="14"
@@ -317,75 +371,76 @@ export default function ArchitecturePage() {
                   </text>
 
                   <rect
-                    x="555"
-                    y="120"
+                    x="560"
+                    y="115"
                     width="90"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="600" y="142" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="605" y="139" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Troubleshoot
                   </text>
 
                   <rect
-                    x="555"
-                    y="165"
+                    x="560"
+                    y="163"
                     width="90"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="600" y="187" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="605" y="187" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Root Cause
                   </text>
 
                   <rect
-                    x="555"
-                    y="210"
+                    x="560"
+                    y="211"
                     width="90"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="600" y="232" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="605" y="235" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Report
                   </text>
 
                   <rect
-                    x="555"
-                    y="255"
+                    x="560"
+                    y="259"
                     width="90"
-                    height="35"
-                    rx="17"
+                    height="38"
+                    rx="19"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="600" y="277" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="605" y="283" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Guide
                   </text>
                 </g>
 
-                {/* Connection - Context to Agents */}
-                <line x1="500" y1="200" x2="540" y2="200" className="stroke-foreground" strokeWidth="2" />
+                {/* Connection - Context to Agents (bold, main flow) */}
+                <line x1="500" y1="200" x2="545" y2="200" className="stroke-foreground" strokeWidth="2" markerEnd="url(#arrowheadBold)" />
+                <circle cx="500" cy="200" r="4" className="fill-foreground" />
 
-                {/* Surfaces */}
+                {/* Surfaces - Fixed container */}
                 <g>
                   <rect
-                    x="700"
-                    y="140"
+                    x="710"
+                    y="115"
                     width="120"
-                    height="120"
+                    height="170"
                     rx="16"
                     className="fill-secondary stroke-border"
                     strokeWidth="1"
                   />
                   <text
-                    x="760"
-                    y="40"
+                    x="770"
+                    y="35"
                     textAnchor="middle"
                     className="fill-foreground text-sm font-semibold"
                     fontSize="14"
@@ -394,60 +449,61 @@ export default function ArchitecturePage() {
                   </text>
 
                   <rect
-                    x="715"
-                    y="160"
+                    x="725"
+                    y="140"
                     width="90"
-                    height="30"
-                    rx="15"
+                    height="35"
+                    rx="17"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="760" y="180" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="770" y="162" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Chat
                   </text>
 
                   <rect
-                    x="715"
-                    y="200"
+                    x="725"
+                    y="185"
                     width="90"
-                    height="30"
-                    rx="15"
+                    height="35"
+                    rx="17"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="760" y="220" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="770" y="207" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Dashboards
                   </text>
 
                   <rect
-                    x="715"
-                    y="240"
+                    x="725"
+                    y="230"
                     width="90"
-                    height="30"
-                    rx="15"
+                    height="35"
+                    rx="17"
                     className="fill-background stroke-border"
                     strokeWidth="1"
                   />
-                  <text x="760" y="260" textAnchor="middle" className="fill-foreground" fontSize="10">
+                  <text x="770" y="252" textAnchor="middle" className="fill-foreground" fontSize="10">
                     Alerts
                   </text>
                 </g>
 
                 {/* Connection - Agents to Surfaces */}
-                <line x1="660" y1="200" x2="700" y2="200" className="stroke-border" strokeWidth="1" />
+                <line x1="665" y1="200" x2="710" y2="200" className="stroke-foreground/40" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+                <circle cx="665" cy="200" r="3" className="fill-foreground/30" />
 
                 {/* Governance layer */}
                 <g>
                   <rect
-                    x="540"
-                    y="320"
-                    width="280"
+                    x="545"
+                    y="330"
+                    width="285"
                     height="50"
                     rx="25"
                     className="fill-foreground/5 stroke-foreground/30"
                     strokeWidth="1"
                   />
-                  <text x="680" y="350" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
+                  <text x="687" y="360" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
                     Governance: Policies • Approvals • Audit Logs
                   </text>
                 </g>
