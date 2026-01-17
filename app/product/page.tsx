@@ -1,15 +1,11 @@
-"use client"
-
 import Link from "next/link"
-import { ArrowUpRight, Check, Layers, Database, Users, FileText, Network, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowUpRight, Check, Layers, Database, Users, FileText, Network } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CTABand } from "@/components/cta-band"
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, type CarouselApi } from "@/components/ui/carousel"
-import { useState, useEffect } from "react"
 
 const agentPacks = [
   {
@@ -187,217 +183,6 @@ const integrations = [
   },
 ]
 
-function AgentPacksSection() {
-  const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(0)
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    if (!api) return
-
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap())
-
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap())
-    })
-  }, [api])
-
-  return (
-    <section id="packs" className="py-24 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-            Agent packs for each domain
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Specialized agents that know their domain, all using the same context layer.
-          </p>
-        </div>
-
-        {/* Side-by-side layout */}
-        <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-          {/* Global Operations Pack - Left Side */}
-          <div className="relative bg-foreground text-background rounded-3xl p-6 md:p-8 overflow-hidden h-full flex flex-col">
-            {/* Decorative pattern inside header */}
-            <div className="absolute inset-0 opacity-10">
-              <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <defs>
-                  <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <circle cx="1" cy="1" r="0.5" fill="currentColor" />
-                  </pattern>
-                </defs>
-                <rect width="100" height="100" fill="url(#grid)" />
-              </svg>
-            </div>
-
-            {/* Decorative circles */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5" />
-            <div className="absolute -bottom-20 -left-10 w-60 h-60 rounded-full bg-white/5" />
-
-            <div className="relative flex-1 flex flex-col">
-              {/* Icon and Title */}
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center flex-shrink-0 border border-white/10">
-                  <Network className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold mb-1">Global Operations Pack</h3>
-                  <p className="text-white/60 text-sm">Orchestration Layer</p>
-                </div>
-              </div>
-
-              <p className="text-white/80 leading-relaxed mb-6 text-sm">
-                Reason across SCADA, ERP, CRM, and SOP domains. Generate unified insights, system-level tradeoff
-                analysis, and leadership-ready narratives by coordinating domain agents.
-              </p>
-
-              {/* Capabilities */}
-              <div className="mb-6 flex-1">
-                <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">
-                  Capabilities
-                </p>
-                <div className="space-y-2">
-                  {[
-                    "Cross-domain incident and performance analysis",
-                    "Operational ↔ business impact correlation",
-                    "Constraint and tradeoff reasoning across systems",
-                    "Executive summaries and decision narratives",
-                  ].map((capability) => (
-                    <div key={capability} className="flex items-start gap-2.5 text-sm text-white/80">
-                      <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Check className="w-3 h-3" />
-                      </div>
-                      {capability}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Coordinates */}
-              <div className="pt-4 border-t border-white/10">
-                <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Coordinates</p>
-                <div className="flex flex-wrap gap-2">
-                  {["SCADA Pack", "ERP Pack", "CRM Pack", "SOP/Quality Pack"].map((pack) => (
-                    <span
-                      key={pack}
-                      className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-medium"
-                    >
-                      {pack}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Domain Packs Carousel - Right Side */}
-          <div className="relative">
-            <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
-              <CarouselContent>
-                {agentPacks.map((pack) => {
-                  const IconComponent = pack.icon
-                  return (
-                    <CarouselItem key={pack.id}>
-                      <Card
-                        className="group relative overflow-hidden bg-card border-border rounded-3xl h-full"
-                      >
-                        {/* Decorative corner pattern */}
-                        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-secondary/80" />
-                        <div className="absolute -top-8 -right-8 w-20 h-20 rounded-full bg-secondary" />
-
-                        <CardHeader className="relative pb-4 z-10">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-xl mb-3">{pack.name}</CardTitle>
-                              <p className="text-muted-foreground text-sm leading-relaxed">{pack.description}</p>
-                            </div>
-                            <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0 ml-4 shadow-lg">
-                              <IconComponent className="w-6 h-6" />
-                            </div>
-                          </div>
-                        </CardHeader>
-
-                        <CardContent className="relative z-10">
-                          <div className="mb-6">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                              Capabilities
-                            </p>
-                            <div className="grid grid-cols-2 gap-2.5">
-                              {pack.features.map((feature) => (
-                                <div key={feature} className="flex items-center gap-2.5 text-sm text-foreground/80">
-                                  <div className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 border border-border">
-                                    <Check className="w-3 h-3 text-foreground" />
-                                  </div>
-                                  {feature}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="pt-5 border-t border-border/50">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                              Connects to
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                              {pack.systems.map((system) => (
-                                <Badge
-                                  key={system}
-                                  variant="secondary"
-                                  className="rounded-full bg-secondary/80 border border-border/50 text-foreground/70 font-normal"
-                                >
-                                  {system}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </CarouselItem>
-                  )
-                })}
-              </CarouselContent>
-
-              {/* Carousel Controls */}
-              <div className="flex items-center justify-between mt-6">
-                <div className="flex items-center gap-2">
-                  {agentPacks.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => api?.scrollTo(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === current ? "bg-foreground w-6" : "bg-foreground/30"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full w-10 h-10"
-                    onClick={() => api?.scrollPrev()}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full w-10 h-10"
-                    onClick={() => api?.scrollNext()}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </Carousel>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export default function ProductPage() {
   return (
     <>
@@ -467,8 +252,212 @@ export default function ProductPage() {
         </section>
 
         {/* Agent Packs */}
-        <AgentPacksSection />
+        <section id="packs" className="py-24 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+                Agent packs for each domain
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Specialized agents that know their domain, all using the same context layer.
+              </p>
+            </div>
 
+            {/* Global Operations Pack Wrapper */}
+            <div className="relative">
+              {/* Outer container - Global Operations Pack */}
+              <div className="relative rounded-[2.5rem] border-2 border-dashed border-foreground/20 bg-gradient-to-b from-secondary/30 to-secondary/60 p-8 md:p-10">
+                {/* Decorative connecting lines from header to cards */}
+                <svg
+                  className="absolute top-32 left-0 right-0 h-16 w-full pointer-events-none hidden md:block"
+                  preserveAspectRatio="none"
+                >
+                  <defs>
+                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="currentColor" stopOpacity="0.05" />
+                    </linearGradient>
+                  </defs>
+                  {/* Lines connecting to each card */}
+                  <line
+                    x1="50%"
+                    y1="0"
+                    x2="25%"
+                    y2="100%"
+                    stroke="url(#lineGrad)"
+                    strokeWidth="1"
+                    className="text-foreground"
+                  />
+                  <line
+                    x1="50%"
+                    y1="0"
+                    x2="75%"
+                    y2="100%"
+                    stroke="url(#lineGrad)"
+                    strokeWidth="1"
+                    className="text-foreground"
+                  />
+                </svg>
+
+                {/* Global Pack Header */}
+                <div className="relative bg-foreground text-background rounded-3xl p-6 md:p-8 mb-8 overflow-hidden">
+                  {/* Decorative pattern inside header */}
+                  <div className="absolute inset-0 opacity-10">
+                    <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <defs>
+                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                          <circle cx="1" cy="1" r="0.5" fill="currentColor" />
+                        </pattern>
+                      </defs>
+                      <rect width="100" height="100" fill="url(#grid)" />
+                    </svg>
+                  </div>
+
+                  {/* Decorative circles */}
+                  <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5" />
+                  <div className="absolute -bottom-20 -left-10 w-60 h-60 rounded-full bg-white/5" />
+
+                  <div className="relative flex flex-col md:flex-row md:items-start gap-6">
+                    {/* Icon */}
+                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center flex-shrink-0 border border-white/10">
+                      <Network className="w-8 h-8" />
+                    </div>
+
+                    <div className="flex-1">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-3">Global Operations Pack</h3>
+                      <p className="text-white/80 leading-relaxed mb-6 max-w-2xl">
+                        Reason across SCADA, ERP, CRM, and SOP domains. Generate unified insights, system-level tradeoff
+                        analysis, and leadership-ready narratives by coordinating domain agents.
+                      </p>
+
+                      {/* Capabilities */}
+                      <div className="mb-6">
+                        <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">
+                          Capabilities
+                        </p>
+                        <div className="grid sm:grid-cols-2 gap-2.5">
+                          {[
+                            "Cross-domain incident and performance analysis",
+                            "Operational ↔ business impact correlation",
+                            "Constraint and tradeoff reasoning across systems",
+                            "Executive summaries and decision narratives",
+                          ].map((capability) => (
+                            <div key={capability} className="flex items-center gap-2.5 text-sm text-white/80">
+                              <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3" />
+                              </div>
+                              {capability}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Connects to */}
+                      <div>
+                        <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Coordinates</p>
+                        <div className="flex flex-wrap gap-2">
+                          {["SCADA Pack", "ERP Pack", "CRM Pack", "SOP/Quality Pack"].map((pack) => (
+                            <span
+                              key={pack}
+                              className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-sm font-medium"
+                            >
+                              {pack}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Helper text */}
+                  <p className="relative mt-6 pt-4 border-t border-white/10 text-xs text-white/50 italic">
+                    This pack does not connect to source systems directly. It reasons through domain agents using the
+                    shared context layer.
+                  </p>
+                </div>
+
+                {/* Domain Pack Cards Grid */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {agentPacks.map((pack, index) => {
+                    const IconComponent = pack.icon
+                    return (
+                      <Card
+                        key={pack.id}
+                        id={pack.id}
+                        className="group relative overflow-hidden bg-card border-border rounded-3xl transition-all duration-500 hover:shadow-xl hover:shadow-foreground/5 hover:-translate-y-1"
+                      >
+                        {/* Decorative corner pattern */}
+                        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-secondary/80 transition-transform duration-500 group-hover:scale-150" />
+                        <div className="absolute -top-8 -right-8 w-20 h-20 rounded-full bg-secondary transition-transform duration-500 group-hover:scale-150 delay-75" />
+
+                        {/* Subtle grid pattern */}
+                        <div
+                          className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23000' fillOpacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                          }}
+                        />
+
+                        <CardHeader className="relative pb-4 z-10">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-xl mb-3">{pack.name}</CardTitle>
+                              <p className="text-muted-foreground text-sm leading-relaxed">{pack.description}</p>
+                            </div>
+                            {/* Icon container with subtle styling */}
+                            <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0 ml-4 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                              <IconComponent className="w-6 h-6" />
+                            </div>
+                          </div>
+                        </CardHeader>
+
+                        <CardContent className="relative z-10">
+                          <div className="mb-6">
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                              Capabilities
+                            </p>
+                            <div className="grid grid-cols-2 gap-2.5">
+                              {pack.features.map((feature) => (
+                                <div key={feature} className="flex items-center gap-2.5 text-sm text-foreground/80">
+                                  <div className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 border border-border">
+                                    <Check className="w-3 h-3 text-foreground" />
+                                  </div>
+                                  {feature}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="pt-5 border-t border-border/50">
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                              Connects to
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {pack.systems.map((system) => (
+                                <Badge
+                                  key={system}
+                                  variant="secondary"
+                                  className="rounded-full bg-secondary/80 border border-border/50 text-foreground/70 font-normal"
+                                >
+                                  {system}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+
+                {/* Corner badges showing containment */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-foreground text-background text-xs font-semibold rounded-full shadow-lg">
+                  Global Operations Pack
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* How it works */}
         <section className="py-24 px-4 bg-secondary/50">
