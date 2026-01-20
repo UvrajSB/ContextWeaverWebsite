@@ -556,6 +556,41 @@ export default function HomePage() {
         {/* Animated Stats */}
         <AnimatedStats />
 
+        {/* RCA Agent Demo Video */}
+        <section className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+                See it in action
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Watch how the RCA Agent analyzes incidents and builds root cause timelines.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative aspect-video rounded-2xl overflow-hidden border border-border shadow-2xl"
+            >
+              <iframe
+                src="https://www.youtube.com/embed/Zjbc6QrF4A4"
+                title="RCA Agent Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </motion.div>
+          </div>
+        </section>
+
         {/* Platform Overview */}
         <section ref={platformRef} className="py-24 px-4 relative bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30 border-b border-border/50">
           {/* Subtle grid pattern overlay */}
