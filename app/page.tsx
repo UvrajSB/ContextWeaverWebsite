@@ -233,7 +233,7 @@ function AnalyticsAgentsTabs({ agents, isInView }: { agents: typeof analyticsAge
         transition={{ duration: 0.3 }}
         className="bg-card border border-border rounded-3xl p-8 flex flex-col sm:flex-row gap-8 items-start max-w-3xl mx-auto"
       >
-        <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0">
+        <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
           <ActiveIcon className="w-7 h-7" />
         </div>
         <div className="flex-1">
@@ -508,12 +508,13 @@ export default function HomePage() {
                     transition={{ duration: 0.6 }}
                     className="md:col-span-3"
                   >
-                    <div className="card-spotlight card-hover h-full bg-card border border-border rounded-2xl p-10 group relative overflow-hidden">
-                      <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-                      <div className="w-12 h-12 rounded-xl bg-foreground text-background flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                    <div className="card-hover h-full bg-gradient-to-br from-primary/8 via-primary/4 to-transparent border border-primary/20 rounded-2xl p-10 group relative overflow-hidden">
+                      <div className="absolute bottom-0 right-0 w-56 h-56 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+                      <div className="absolute top-0 left-0 w-32 h-32 rounded-full bg-primary/8 blur-2xl pointer-events-none" />
+                      <div className="w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
                         <Icon className="w-6 h-6" />
                       </div>
-                      <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Featured</p>
+                      <p className="text-xs font-semibold tracking-widest text-primary/70 uppercase mb-3">Featured</p>
                       <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">{agent.name}</h3>
                       <p className="text-muted-foreground leading-relaxed">{agent.description}</p>
                     </div>
@@ -532,8 +533,9 @@ export default function HomePage() {
                       transition={{ duration: 0.6, delay: 0.1 + i * 0.1 }}
                       className="flex-1"
                     >
-                      <div className="card-spotlight card-hover h-full bg-card border border-border rounded-2xl p-7 group">
-                        <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                      <div className="card-hover h-full bg-card border border-border rounded-2xl p-7 group relative overflow-hidden">
+                        <div className="absolute bottom-0 right-0 w-24 h-24 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-primary/15 transition-all duration-300">
                           <Icon className="w-5 h-5" />
                         </div>
                         <h3 className="text-lg font-bold tracking-tight text-foreground mb-2">{agent.name}</h3>
