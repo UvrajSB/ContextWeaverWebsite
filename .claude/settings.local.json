@@ -8,7 +8,9 @@
       "Bash(pnpm dev:*)",
       "Bash(curl:*)",
       "Bash(pkill -f \"next dev\")",
-      "Bash(PORT=3001 npx next dev -p 3001)"
+      "Bash(PORT=3001 npx next dev -p 3001)",
+      "Bash(npx skills:*)",
+      "Bash(git commit -m ':*)"
     ]
   }
 }

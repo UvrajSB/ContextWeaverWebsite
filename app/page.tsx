@@ -1,10 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import {
   ArrowUpRight,
-  Check,
   Database,
   Wrench,
   Bell,
@@ -53,23 +52,20 @@ const dataProblems = [
   {
     icon: AlertTriangle,
     title: "Sensor data you can't trust",
-    description:
-      "Missing values, unit mismatches, stale readings, and sensor drift make raw IoT data unreliable. Analytics built on bad data give bad answers.",
-    stat: "~40% of sensor readings require cleaning before use",
+    stat: "~40%",
+    statLabel: "of sensor readings need cleaning before use",
   },
   {
     icon: GitBranch,
     title: "Context lives in silos",
-    description:
-      "SCADA, historian, MES, and ERP each hold a piece of the puzzle. Without linking them, root cause analysis becomes a manual cross-referencing exercise.",
-    stat: "Engineers spend 60% of investigation time gathering data",
+    stat: "60%",
+    statLabel: "of investigation time spent just gathering data",
   },
   {
     icon: Wrench,
     title: "Hand-built pipelines break fast",
-    description:
-      "Custom ETL scripts for each sensor type don't scale. When equipment changes, tag names change, and the pipeline breaks silently.",
-    stat: "60–70% of data engineering effort is maintenance, not insight",
+    stat: "70%",
+    statLabel: "of data engineering effort is maintenance, not insight",
   },
 ]
 
@@ -77,38 +73,17 @@ const dataEngineeringAgents = [
   {
     icon: Database,
     name: "Pipeline Builder Agent",
-    description:
-      "Automatically discovers IoT data sources, infers schemas, and builds cleaning and normalization pipelines, no hand-coding required.",
-    capabilities: [
-      "Auto-discovery of OPC-UA, MQTT, and historian tags",
-      "Schema inference and type normalization",
-      "Duplicate and outlier detection",
-      "Automated pipeline documentation",
-    ],
+    description: "Auto-discovers sources, infers schemas, and builds cleaning pipelines. No hand-coding.",
   },
   {
     icon: Shield,
     name: "Data Quality Agent",
-    description:
-      "Continuously monitors ingested data for anomalies, gaps, and drift. Flags degraded data before it contaminates downstream analytics.",
-    capabilities: [
-      "Real-time data quality scoring",
-      "Missing value and gap detection",
-      "Sensor drift and calibration alerts",
-      "Data lineage tracking",
-    ],
+    description: "Monitors ingested data continuously for gaps, drift, and anomalies before they reach analytics.",
   },
   {
     icon: Network,
     name: "Context Enrichment Agent",
-    description:
-      "Enriches raw sensor readings with asset context, linking tags to equipment, equipment to production lines, and events to business outcomes.",
-    capabilities: [
-      "Tag-to-asset mapping",
-      "OT/IT cross-domain linking",
-      "Production event correlation",
-      "Semantic metric definitions",
-    ],
+    description: "Links raw tags to physical assets, production lines, and business outcomes across OT and IT.",
   },
 ]
 
@@ -195,31 +170,11 @@ const analyticsAgents = [
 ]
 
 const steps = [
-  {
-    step: 1,
-    title: "Connect",
-    description: "Securely connect SCADA, historians, MES, ERP, and document systems through native industrial connectors.",
-  },
-  {
-    step: 2,
-    title: "Clean & Structure",
-    description: "Data Engineering Agents automatically clean, normalize, and validate raw IoT data as it arrives.",
-  },
-  {
-    step: 3,
-    title: "Enrich Context",
-    description: "Link sensor tags to physical assets, production lines, and business processes to build a unified data model.",
-  },
-  {
-    step: 4,
-    title: "Run Analytics Agents",
-    description: "Deploy RCA, troubleshooting, alarm, and production agents that query the clean, contextual data layer.",
-  },
-  {
-    step: 5,
-    title: "Improve Continuously",
-    description: "Capture feedback, refine data models, and expand coverage as your plant evolves.",
-  },
+  { step: 1, title: "Connect", description: "SCADA, historians, MES, ERP via native connectors" },
+  { step: 2, title: "Clean", description: "Agents normalize, validate, and score data quality" },
+  { step: 3, title: "Enrich", description: "Tags linked to assets, lines, and business context" },
+  { step: 4, title: "Analyze", description: "RCA, troubleshooting, and production agents run on clean data" },
+  { step: 5, title: "Improve", description: "Feedback refines models and expands coverage over time" },
 ]
 
 const integrations = [
@@ -236,6 +191,80 @@ const integrations = [
   { name: "AWS IoT" },
   { name: "OPC-UA" },
 ]
+
+function AnalyticsAgentsTabs({ agents, isInView }: { agents: typeof analyticsAgents; isInView: boolean }) {
+  const [active, setActive] = useState(0)
+  const activeAgent = agents[active]
+  const ActiveIcon = activeAgent.icon
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={fadeInUp}
+      transition={{ duration: 0.6, delay: 0.2 }}
+    >
+      {/* Tab buttons */}
+      <div className="flex flex-wrap justify-center gap-2 mb-8">
+        {agents.map((agent, i) => {
+          const Icon = agent.icon
+          return (
+            <button
+              key={agent.name}
+              onClick={() => setActive(i)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                active === i
+                  ? "bg-foreground text-background shadow-sm"
+                  : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {agent.name}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Active agent panel */}
+      <motion.div
+        key={active}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-card border border-border rounded-3xl p-8 flex flex-col sm:flex-row gap-8 items-start max-w-3xl mx-auto"
+      >
+        <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0">
+          <ActiveIcon className="w-7 h-7" />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-3">
+            <h3 className="text-xl font-semibold text-foreground">{activeAgent.name}</h3>
+            {activeAgent.badge && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-background animate-pulse" />
+                {activeAgent.badge}
+              </span>
+            )}
+          </div>
+          <p className="text-muted-foreground leading-relaxed mb-5">{activeAgent.description}</p>
+          <Link
+            href={activeAgent.link}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:underline underline-offset-4"
+          >
+            See full use case
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </motion.div>
+
+      <div className="text-center mt-8">
+        <Button variant="outline" size="lg" asChild className="rounded-full px-8 bg-transparent">
+          <Link href="/use-cases">Explore all use cases</Link>
+        </Button>
+      </div>
+    </motion.div>
+  )
+}
 
 export default function HomePage() {
   const problemRef = useRef(null)
@@ -378,19 +407,16 @@ export default function HomePage() {
                     key={problem.title}
                     variants={fadeInUp}
                     transition={{ duration: 0.6, delay: i * 0.1 }}
+                    className="flex flex-col items-center text-center p-8 rounded-3xl border border-border bg-card group hover:shadow-md transition-all duration-300"
                   >
-                    <Card className="card-hover h-full bg-card border-border rounded-3xl overflow-hidden group">
-                      <CardContent className="pt-8 pb-8 px-8">
-                        <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-6 h-6 text-foreground" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-foreground mb-3">{problem.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed mb-5">{problem.description}</p>
-                        <div className="pt-4 border-t border-border/50">
-                          <p className="text-xs font-medium text-foreground/60 italic">{problem.stat}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-7 h-7 text-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-4">{problem.title}</h3>
+                    <div className="mt-auto pt-4 border-t border-border/50 w-full">
+                      <p className="text-3xl font-bold text-foreground mb-1">{problem.stat}</p>
+                      <p className="text-sm text-muted-foreground">{problem.statLabel}</p>
+                    </div>
                   </motion.div>
                 )
               })}
@@ -478,15 +504,7 @@ export default function HomePage() {
                           <Icon className="w-6 h-6" />
                         </div>
                         <h3 className="text-xl font-semibold text-foreground mb-3">{agent.name}</h3>
-                        <p className="text-muted-foreground leading-relaxed mb-6">{agent.description}</p>
-                        <ul className="space-y-2">
-                          {agent.capabilities.map((cap) => (
-                            <li key={cap} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                              <Check className="w-4 h-4 mt-0.5 flex-shrink-0 text-foreground" />
-                              {cap}
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="text-muted-foreground leading-relaxed">{agent.description}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -518,107 +536,51 @@ export default function HomePage() {
               </p>
             </motion.div>
 
-            <motion.div
-              initial="hidden"
-              animate={analyticsInView ? "visible" : "hidden"}
-              variants={staggerContainer}
-              className="grid md:grid-cols-3 gap-6"
-            >
-              {analyticsAgents.map((agent) => {
-                const Icon = agent.icon
-                return (
-                  <motion.div key={agent.name} variants={fadeInUp} transition={{ duration: 0.6 }}>
-                    <Link href={agent.link} className="block h-full">
-                      <Card className="h-full bg-card border-border rounded-3xl group hover:shadow-lg hover:shadow-foreground/5 transition-all duration-300 cursor-pointer">
-                        <CardContent className="pt-8 pb-8 px-8">
-                          <div className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <h3 className="text-xl font-semibold text-foreground">{agent.name}</h3>
-                            {agent.badge && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-medium">
-                                <span className="w-1.5 h-1.5 rounded-full bg-background animate-pulse" />
-                                {agent.badge}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-muted-foreground leading-relaxed mb-6">{agent.description}</p>
-                          <ul className="space-y-2">
-                            {agent.capabilities.map((cap) => (
-                              <li key={cap} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                                <Check className="w-4 h-4 mt-0.5 flex-shrink-0 text-foreground" />
-                                {cap}
-                              </li>
-                            ))}
-                          </ul>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </motion.div>
-                )
-              })}
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              animate={analyticsInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-center mt-10"
-            >
-              <Button variant="outline" size="lg" asChild className="rounded-full px-8 bg-transparent">
-                <Link href="/use-cases">Explore all use cases</Link>
-              </Button>
-            </motion.div>
+            <AnalyticsAgentsTabs agents={analyticsAgents} isInView={analyticsInView} />
           </div>
         </section>
 
         {/* ── How It Works ── */}
         <section
           ref={howItWorksRef}
-          className="py-24 px-4 border-b border-border/50 bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30"
+          className="py-20 px-4 border-b border-border/50 bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30"
         >
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.div
               initial="hidden"
               animate={howItWorksInView ? "visible" : "hidden"}
               variants={fadeInUp}
               transition={{ duration: 0.6 }}
-              className="text-center mb-14"
+              className="text-center mb-12"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">How it works</h2>
-              <p className="text-lg text-muted-foreground">From raw, messy IoT data to reliable analytics.</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">How it works</h2>
+              <p className="text-muted-foreground">From raw IoT data to reliable analytics in five steps.</p>
             </motion.div>
 
             <motion.div
               initial="hidden"
               animate={howItWorksInView ? "visible" : "hidden"}
               variants={staggerContainer}
-              className="relative"
+              className="flex flex-col sm:flex-row items-stretch gap-0"
             >
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={howItWorksInView ? { scaleX: 1 } : { scaleX: 0 }}
-                transition={{ duration: 1, delay: 0.3 }}
-                className="hidden md:block absolute top-7 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-transparent via-border to-transparent origin-left"
-              />
-              <div className="grid md:grid-cols-5 gap-8">
-                {steps.map((item) => (
-                  <motion.div
-                    key={item.step}
-                    variants={fadeInUp}
-                    transition={{ duration: 0.6 }}
-                    className="text-center relative"
-                  >
-                    <div className="w-14 h-14 rounded-full bg-foreground text-background flex items-center justify-center mx-auto mb-5 text-lg font-bold relative z-10 shadow-lg">
-                      {item.step}
-                    </div>
-                    <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-                  </motion.div>
-                ))}
-              </div>
+              {steps.map((item, i) => (
+                <motion.div
+                  key={item.step}
+                  variants={fadeInUp}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  className="flex-1 flex flex-col items-center text-center px-4 py-6 relative group"
+                >
+                  {/* connector line */}
+                  {i < steps.length - 1 && (
+                    <div className="hidden sm:block absolute right-0 top-[38px] w-px h-6 bg-border -translate-y-1/2 translate-x-1/2 z-10" />
+                  )}
+                  <div className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center text-sm font-bold mb-3 relative z-10">
+                    {item.step}
+                  </div>
+                  <p className="text-sm font-semibold text-foreground mb-1">{item.title}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
