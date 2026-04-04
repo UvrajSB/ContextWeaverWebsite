@@ -4,58 +4,65 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CTABand } from "@/components/cta-band"
 
-const contextLayerItems = [
+const dataLayerItems = [
   {
-    id: "asset-model",
-    title: "Asset & identity model",
+    id: "ingestion",
+    title: "Ingestion & protocol adapters",
     content:
-      "A hierarchical representation of your physical and logical assets: plants, lines, machines, equipment, and the tags that measure them. Assets are linked to their identities in other systems (ERP equipment IDs, CRM account codes, maintenance system asset numbers) so queries can traverse across domains.",
+      "Native connectors for OPC-UA, MQTT, REST historians, OSIsoft PI, Ignition, Wonderware, and common MES/ERP APIs. Data is pulled securely on a read-only basis with no writes to source systems. Adapters handle protocol-level quirks like timestamp resolution differences, backfill gaps, and connection failures.",
   },
   {
-    id: "semantic-layer",
-    title: "Semantic layer (metrics definitions)",
+    id: "quality",
+    title: "Automated data quality pipeline",
     content:
-      "Consistent definitions for KPIs and metrics that everyone agrees on. OEE, availability, quality, throughput, and custom metrics are defined once and computed consistently across all agents and surfaces. No more spreadsheet disagreements about what 'uptime' means.",
+      "Incoming sensor data is immediately assessed for completeness, range validity, freshness, and statistical anomalies. The Data Quality Agent applies configurable cleaning rules, interpolating short gaps, flagging suspect readings, removing duplicates, and maintains a quality score per tag over time. Downstream agents always know the reliability of the data they're working with.",
   },
   {
-    id: "lineage",
-    title: "Lineage & relationships (OT ↔ IT)",
+    id: "normalization",
+    title: "Normalization & unit harmonization",
     content:
-      "Explicit links between operational signals and business entities. Which tags belong to which equipment? Which equipment produces which products? Which products fulfill which orders? Which orders belong to which customers? These relationships enable cross-domain reasoning.",
+      "Different sensors report the same physical quantity in different units, at different resolutions, with different naming conventions. The normalization layer creates a consistent representation: standardized engineering units, aligned timestamps, canonical tag names mapped from the source tag namespace.",
+  },
+  {
+    id: "context",
+    title: "Context enrichment & asset model",
+    content:
+      "Raw sensor tags are linked to the physical assets they belong to (equipment, production lines, plants). Assets are connected to their representations in ERP, MES, and maintenance systems. This OT/IT bridge is what allows an RCA agent to trace from a quality defect back through process conditions to a specific piece of equipment and its maintenance history.",
   },
   {
     id: "memory",
-    title: "Memory (incidents, fixes, learnings)",
+    title: "Incident memory & learnings",
     content:
-      "A persistent record of what has happened and what worked. Past incidents, their root causes, the fixes that resolved them, and the learnings captured afterward. This memory allows agents to recognize patterns and suggest solutions that have worked before.",
+      "Past incidents, their root causes, the fixes that resolved them, and engineer notes are stored in a searchable memory layer. When a new incident occurs, agents can retrieve similar past events and suggest solutions that have worked before, creating an institutional knowledge base that doesn't leave when engineers do.",
   },
   {
     id: "knowledge",
-    title: "Knowledge indexing (SOPs, tickets, docs)",
+    title: "Knowledge indexing (SOPs, manuals, tickets)",
     content:
-      "Indexed access to unstructured knowledge: standard operating procedures, maintenance manuals, past tickets, engineering documents. Agents can retrieve and reason over this content in the context of the current situation.",
+      "Standard operating procedures, equipment manuals, past support tickets, and engineering documents are indexed and made retrievable in context. When a troubleshooting agent needs to reference the correct startup sequence for a compressor, it retrieves the relevant SOP section, not the entire document.",
   },
 ]
 
-const orchestrationItems = [
+const governanceItems = [
   {
-    title: "Tool routing",
+    title: "Read-only source access",
     description:
-      "The platform routes queries to the appropriate agents and tools based on the question type and available context.",
+      "All source system connections are read-only. Agents cannot write to SCADA, historians, or ERP systems. Actions that affect operations require explicit human approval.",
   },
   {
-    title: "Policy enforcement",
+    title: "Human-in-the-loop approvals",
     description:
-      "Actions are governed by policies that define what agents can do, what requires approval, and what is logged.",
+      "High-impact actions (work order creation, alarm configuration changes, CAPA submissions) are proposed by agents but require human review and approval before execution.",
   },
   {
-    title: "Observability",
-    description: "Full visibility into agent reasoning, data access, and action execution for debugging and audit.",
+    title: "Full audit trail",
+    description:
+      "Every query, data access, agent reasoning step, and action is logged immutably. Audit trails are exportable for compliance reviews and post-incident investigations.",
   },
   {
-    title: "Human approvals",
+    title: "Role-based access control",
     description:
-      "Sensitive or high-impact actions require human review before execution, with clear context for the approver.",
+      "Data visibility and agent capabilities are scoped by role. Operators see their line's data. Engineers see their plant. Leadership sees aggregates. Sensitive data is masked per policy.",
   },
 ]
 
@@ -67,46 +74,35 @@ export default function ArchitecturePage() {
         {/* Hero */}
         <section className="py-24 px-4">
           <div className="max-w-4xl mx-auto text-center">
+            <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-6">
+              Architecture
+            </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-6 text-balance">
-              Context layer = shared brain
+              Clean data in. Reliable answers out.
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
-              The platform works because every agent shares the same understanding of your operations. That
-              understanding lives in the context layer.
+              The platform is built in two layers: a Data Engineering layer that makes IoT data trustworthy,
+              and an Analytics Agent layer that reasons over it. Each layer is independently valuable.
+              Together, they make manufacturing analytics actually work.
             </p>
           </div>
         </section>
 
-        {/* Big Diagram - Updated styling */}
+        {/* Architecture Diagram */}
         <section className="py-16 px-4 bg-secondary/50">
           <div className="max-w-6xl mx-auto">
             <div className="bg-card rounded-3xl border border-border p-8 overflow-x-auto">
               <svg
-                viewBox="0 0 920 420"
+                viewBox="0 0 960 480"
                 className="w-full min-w-[700px] h-auto"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Defs for arrows and patterns */}
                 <defs>
-                  <marker
-                    id="arrowhead"
-                    markerWidth="8"
-                    markerHeight="6"
-                    refX="7"
-                    refY="3"
-                    orient="auto"
-                  >
+                  <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                     <polygon points="0 0, 8 3, 0 6" className="fill-foreground/40" />
                   </marker>
-                  <marker
-                    id="arrowheadBold"
-                    markerWidth="8"
-                    markerHeight="6"
-                    refX="7"
-                    refY="3"
-                    orient="auto"
-                  >
+                  <marker id="arrowheadBold" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                     <polygon points="0 0, 8 3, 0 6" className="fill-foreground" />
                   </marker>
                   <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -114,415 +110,117 @@ export default function ArchitecturePage() {
                   </pattern>
                 </defs>
 
-                {/* Background subtle pattern */}
-                <rect width="920" height="420" fill="url(#dotPattern)" />
+                <rect width="960" height="480" fill="url(#dotPattern)" />
 
-                {/* Sources */}
+                {/* IoT Sources */}
                 <g>
-                  <rect
-                    x="20"
-                    y="60"
-                    width="120"
-                    height="280"
-                    rx="16"
-                    className="fill-secondary stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="80"
-                    y="40"
-                    textAnchor="middle"
-                    className="fill-foreground text-sm font-semibold"
-                    fontSize="14"
-                  >
-                    Sources
-                  </text>
-
-                  <rect
-                    x="35"
-                    y="80"
-                    width="90"
-                    height="40"
-                    rx="20"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="80" y="105" textAnchor="middle" className="fill-foreground" fontSize="11">
-                    SCADA
-                  </text>
-
-                  <rect
-                    x="35"
-                    y="130"
-                    width="90"
-                    height="40"
-                    rx="20"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="80" y="155" textAnchor="middle" className="fill-foreground" fontSize="11">
-                    Historian
-                  </text>
-
-                  <rect
-                    x="35"
-                    y="180"
-                    width="90"
-                    height="40"
-                    rx="20"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="80" y="205" textAnchor="middle" className="fill-foreground" fontSize="11">
-                    MES
-                  </text>
-
-                  <rect
-                    x="35"
-                    y="230"
-                    width="90"
-                    height="40"
-                    rx="20"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="80" y="255" textAnchor="middle" className="fill-foreground" fontSize="11">
-                    ERP
-                  </text>
-
-                  <rect
-                    x="35"
-                    y="280"
-                    width="90"
-                    height="40"
-                    rx="20"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="80" y="305" textAnchor="middle" className="fill-foreground" fontSize="11">
-                    CRM / Docs
-                  </text>
+                  <rect x="20" y="80" width="130" height="300" rx="16" className="fill-secondary stroke-border" strokeWidth="1" />
+                  <text x="85" y="55" textAnchor="middle" className="fill-foreground font-semibold" fontSize="13">IoT Sources</text>
+                  {["SCADA", "Historian", "MES", "ERP/SAP", "Docs/SOPs"].map((label, i) => (
+                    <g key={label}>
+                      <rect x="35" y={100 + i * 52} width="100" height="36" rx="18" className="fill-background stroke-border" strokeWidth="1" />
+                      <text x="85" y={122 + i * 52} textAnchor="middle" className="fill-foreground" fontSize="10">{label}</text>
+                    </g>
+                  ))}
                 </g>
 
-                {/* Connectors */}
+                {/* Data Engineering Layer */}
                 <g>
-                  <rect
-                    x="180"
-                    y="130"
-                    width="80"
-                    height="140"
-                    rx="16"
-                    className="fill-secondary stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="220" y="185" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
-                    Connectors
-                  </text>
-                  <text x="220" y="205" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
-                    Secure
-                  </text>
-                  <text x="220" y="220" textAnchor="middle" className="fill-muted-foreground" fontSize="9">
-                    Read-only
-                  </text>
-                  {/* Small lock icon */}
-                  <circle cx="220" cy="245" r="8" className="fill-foreground/10" />
-                  <rect x="216" y="243" width="8" height="6" rx="1" className="fill-foreground/40" />
-                  <path d="M217 243v-2a3 3 0 0 1 6 0v2" className="stroke-foreground/40" strokeWidth="1.5" fill="none" />
+                  <rect x="185" y="55" width="340" height="340" rx="20" className="fill-foreground/5 stroke-foreground" strokeWidth="2" />
+                  <text x="355" y="38" textAnchor="middle" className="fill-foreground font-semibold" fontSize="13">Data Engineering Layer</text>
+
+                  {/* Ingestion */}
+                  <rect x="200" y="80" width="310" height="50" rx="12" className="fill-secondary stroke-border" strokeWidth="1" />
+                  <text x="355" y="100" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Ingestion & Protocol Adapters</text>
+                  <text x="355" y="117" textAnchor="middle" className="fill-muted-foreground" fontSize="9">OPC-UA · MQTT · REST · Native connectors</text>
+
+                  {/* Quality */}
+                  <rect x="200" y="145" width="145" height="50" rx="12" className="fill-background stroke-border" strokeWidth="1" />
+                  <text x="272" y="165" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Data Quality</text>
+                  <text x="272" y="182" textAnchor="middle" className="fill-muted-foreground" fontSize="9">Clean · Validate · Score</text>
+
+                  {/* Normalization */}
+                  <rect x="355" y="145" width="155" height="50" rx="12" className="fill-background stroke-border" strokeWidth="1" />
+                  <text x="432" y="165" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Normalization</text>
+                  <text x="432" y="182" textAnchor="middle" className="fill-muted-foreground" fontSize="9">Units · Timestamps · Tags</text>
+
+                  {/* Context Enrichment */}
+                  <rect x="200" y="210" width="310" height="50" rx="12" className="fill-background stroke-border" strokeWidth="1" />
+                  <text x="355" y="230" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Context Enrichment & Asset Model</text>
+                  <text x="355" y="247" textAnchor="middle" className="fill-muted-foreground" fontSize="9">Tags → Equipment → Lines → Business outcomes</text>
+
+                  {/* Memory & Knowledge */}
+                  <rect x="200" y="275" width="145" height="50" rx="12" className="fill-background stroke-border" strokeWidth="1" />
+                  <text x="272" y="295" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Incident Memory</text>
+                  <text x="272" y="312" textAnchor="middle" className="fill-muted-foreground" fontSize="9">Past events & learnings</text>
+
+                  <rect x="355" y="275" width="155" height="50" rx="12" className="fill-background stroke-border" strokeWidth="1" />
+                  <text x="432" y="295" textAnchor="middle" className="fill-foreground" fontSize="10" fontWeight="500">Knowledge Index</text>
+                  <text x="432" y="312" textAnchor="middle" className="fill-muted-foreground" fontSize="9">SOPs · Manuals · Tickets</text>
                 </g>
 
-                {/* Connection lines - Sources to Connectors */}
+                {/* Arrows: Sources → DE Layer */}
                 <g className="stroke-foreground/30" strokeWidth="1">
-                  <line x1="125" y1="100" x2="180" y2="160" />
-                  <line x1="125" y1="150" x2="180" y2="180" />
-                  <line x1="140" y1="200" x2="180" y2="200" markerEnd="url(#arrowhead)" />
-                  <line x1="125" y1="250" x2="180" y2="220" />
-                  <line x1="125" y1="300" x2="180" y2="240" />
-                  {/* Connection dots at source ends */}
-                  <circle cx="125" cy="100" r="2" className="fill-foreground/30" />
-                  <circle cx="125" cy="150" r="2" className="fill-foreground/30" />
-                  <circle cx="140" cy="200" r="2" className="fill-foreground/30" />
-                  <circle cx="125" cy="250" r="2" className="fill-foreground/30" />
-                  <circle cx="125" cy="300" r="2" className="fill-foreground/30" />
+                  {[118, 170, 222, 274, 326].map((y, i) => (
+                    <line key={i} x1="150" y1={y} x2="185" y2={y} markerEnd="url(#arrowhead)" />
+                  ))}
                 </g>
 
-                {/* Context Layer - Central */}
+                {/* Analytics Agents */}
                 <g>
-                  <rect
-                    x="300"
-                    y="50"
-                    width="200"
-                    height="300"
-                    rx="20"
-                    className="fill-foreground/5 stroke-foreground"
-                    strokeWidth="2"
-                  />
-                  {/* Inner glow effect */}
-                  <rect
-                    x="305"
-                    y="55"
-                    width="190"
-                    height="290"
-                    rx="17"
-                    className="fill-none stroke-foreground/10"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="400"
-                    y="35"
-                    textAnchor="middle"
-                    className="fill-foreground text-sm font-semibold"
-                    fontSize="14"
-                  >
-                    Context Layer
-                  </text>
-
-                  <rect
-                    x="320"
-                    y="75"
-                    width="160"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="400" y="99" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Asset Model
-                  </text>
-
-                  <rect
-                    x="320"
-                    y="123"
-                    width="160"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="400" y="147" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Semantic Metrics
-                  </text>
-
-                  <rect
-                    x="320"
-                    y="171"
-                    width="160"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="400" y="195" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Lineage & Relationships
-                  </text>
-
-                  <rect
-                    x="320"
-                    y="219"
-                    width="160"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="400" y="243" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Memory & Learnings
-                  </text>
-
-                  <rect
-                    x="320"
-                    y="267"
-                    width="160"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="400" y="291" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Knowledge Index
-                  </text>
-
-                  {/* Vertical connecting line inside context layer */}
-                  <line x1="310" y1="94" x2="310" y2="286" className="stroke-foreground/10" strokeWidth="1" strokeDasharray="2 4" />
+                  <rect x="560" y="80" width="140" height="310" rx="16" className="fill-secondary stroke-border" strokeWidth="1" />
+                  <text x="630" y="55" textAnchor="middle" className="fill-foreground font-semibold" fontSize="13">Analytics Agents</text>
+                  {["RCA Agent", "Troubleshoot", "Alarm Mgmt", "OEE Agent", "Quality Agent", "Predictive"].map((label, i) => (
+                    <g key={label}>
+                      <rect x="575" y={100 + i * 46} width="110" height="36" rx="18" className="fill-background stroke-border" strokeWidth="1" />
+                      <text x="630" y={122 + i * 46} textAnchor="middle" className="fill-foreground" fontSize="10">{label}</text>
+                    </g>
+                  ))}
                 </g>
 
-                {/* Connection - Connectors to Context */}
-                <line x1="260" y1="200" x2="300" y2="200" className="stroke-foreground/40" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
-                <circle cx="260" cy="200" r="3" className="fill-foreground/30" />
+                {/* Arrow: DE Layer → Agents (bold, main flow) */}
+                <line x1="525" y1="235" x2="560" y2="235" className="stroke-foreground" strokeWidth="2.5" markerEnd="url(#arrowheadBold)" />
+                <circle cx="525" cy="235" r="5" className="fill-foreground" />
 
-                {/* Agents */}
+                {/* Surfaces */}
                 <g>
-                  <rect
-                    x="545"
-                    y="90"
-                    width="120"
-                    height="220"
-                    rx="16"
-                    className="fill-secondary stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="605"
-                    y="35"
-                    textAnchor="middle"
-                    className="fill-foreground text-sm font-semibold"
-                    fontSize="14"
-                  >
-                    Agents
-                  </text>
-
-                  <rect
-                    x="560"
-                    y="115"
-                    width="90"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="605" y="139" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Troubleshoot
-                  </text>
-
-                  <rect
-                    x="560"
-                    y="163"
-                    width="90"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="605" y="187" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Root Cause
-                  </text>
-
-                  <rect
-                    x="560"
-                    y="211"
-                    width="90"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="605" y="235" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Report
-                  </text>
-
-                  <rect
-                    x="560"
-                    y="259"
-                    width="90"
-                    height="38"
-                    rx="19"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="605" y="283" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Guide
-                  </text>
+                  <rect x="740" y="120" width="130" height="225" rx="16" className="fill-secondary stroke-border" strokeWidth="1" />
+                  <text x="805" y="95" textAnchor="middle" className="fill-foreground font-semibold" fontSize="13">Surfaces</text>
+                  {["Chat interface", "Dashboards", "Email alerts", "Work orders"].map((label, i) => (
+                    <g key={label}>
+                      <rect x="755" y={140 + i * 48} width="100" height="36" rx="18" className="fill-background stroke-border" strokeWidth="1" />
+                      <text x="805" y={162 + i * 48} textAnchor="middle" className="fill-foreground" fontSize="10">{label}</text>
+                    </g>
+                  ))}
                 </g>
 
-                {/* Connection - Context to Agents (bold, main flow) */}
-                <line x1="500" y1="200" x2="545" y2="200" className="stroke-foreground" strokeWidth="2" markerEnd="url(#arrowheadBold)" />
-                <circle cx="500" cy="200" r="4" className="fill-foreground" />
+                {/* Arrow: Agents → Surfaces */}
+                <line x1="700" y1="235" x2="740" y2="235" className="stroke-foreground/40" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+                <circle cx="700" cy="235" r="3" className="fill-foreground/40" />
 
-                {/* Surfaces - Fixed container */}
-                <g>
-                  <rect
-                    x="710"
-                    y="115"
-                    width="120"
-                    height="170"
-                    rx="16"
-                    className="fill-secondary stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="770"
-                    y="35"
-                    textAnchor="middle"
-                    className="fill-foreground text-sm font-semibold"
-                    fontSize="14"
-                  >
-                    Surfaces
-                  </text>
-
-                  <rect
-                    x="725"
-                    y="140"
-                    width="90"
-                    height="35"
-                    rx="17"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="770" y="162" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Chat
-                  </text>
-
-                  <rect
-                    x="725"
-                    y="185"
-                    width="90"
-                    height="35"
-                    rx="17"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="770" y="207" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Dashboards
-                  </text>
-
-                  <rect
-                    x="725"
-                    y="230"
-                    width="90"
-                    height="35"
-                    rx="17"
-                    className="fill-background stroke-border"
-                    strokeWidth="1"
-                  />
-                  <text x="770" y="252" textAnchor="middle" className="fill-foreground" fontSize="10">
-                    Alerts
-                  </text>
-                </g>
-
-                {/* Connection - Agents to Surfaces */}
-                <line x1="665" y1="200" x2="710" y2="200" className="stroke-foreground/40" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
-                <circle cx="665" cy="200" r="3" className="fill-foreground/30" />
-
-                {/* Governance layer */}
-                <g>
-                  <rect
-                    x="545"
-                    y="330"
-                    width="285"
-                    height="50"
-                    rx="25"
-                    className="fill-foreground/5 stroke-foreground/30"
-                    strokeWidth="1"
-                  />
-                  <text x="687" y="360" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
-                    Governance: Policies • Approvals • Audit Logs
-                  </text>
-                </g>
+                {/* Governance Bar */}
+                <rect x="560" y="415" width="310" height="45" rx="22" className="fill-foreground/5 stroke-foreground/30" strokeWidth="1" />
+                <text x="715" y="442" textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="500">
+                  Governance: RBAC · Approvals · Audit Logs · Read-only sources
+                </text>
               </svg>
             </div>
           </div>
         </section>
 
-        {/* Context Layer Deep Dive */}
+        {/* Data Engineering Layer Deep Dive */}
         <section className="py-24 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">Context layer deep dive</h2>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+              Data engineering layer, in detail
+            </h2>
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-              The context layer is the foundation that makes agents useful. It contains structured knowledge about your
-              operations that agents can query and reason over.
+              The data engineering layer is what makes the analytics agents reliable. Without it, agents would
+              be reasoning over noisy, incomplete, context-free sensor data, and producing untrustworthy outputs.
             </p>
 
             <Accordion type="single" collapsible className="w-full">
-              {contextLayerItems.map((item) => (
+              {dataLayerItems.map((item) => (
                 <AccordionItem key={item.id} value={item.id} className="border-border">
                   <AccordionTrigger className="text-left py-5 hover:no-underline">
                     <span className="font-semibold text-lg">{item.title}</span>
@@ -536,21 +234,21 @@ export default function ArchitecturePage() {
           </div>
         </section>
 
-        {/* Orchestration */}
+        {/* Governance */}
         <section className="py-24 px-4 bg-secondary/50">
           <div className="max-w-5xl mx-auto">
             <div className="max-w-3xl mb-14">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-                Orchestration & evaluation
+                Governance & safety
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                The platform coordinates agent activities, enforces policies, and provides visibility into what agents
-                are doing and why.
+                Connecting AI agents to operational systems requires strict guardrails. Every interaction
+                is governed, logged, and auditable.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {orchestrationItems.map((item) => (
+              {governanceItems.map((item) => (
                 <Card key={item.title} className="bg-card border-border rounded-3xl">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg">{item.title}</CardTitle>
@@ -564,10 +262,9 @@ export default function ArchitecturePage() {
           </div>
         </section>
 
-        {/* CTA */}
         <CTABand
           title="Want to see the architecture in action?"
-          description="We can walk through how the context layer would work with your specific systems and use cases."
+          description="We'll walk through how the data engineering pipeline would work with your specific systems, and what the first analytics agent would look like on top of it."
         />
       </main>
       <Footer />

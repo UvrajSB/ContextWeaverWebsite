@@ -58,10 +58,10 @@ function AnimatedCounter({ value, suffix = "", prefix = "", label, duration = 20
 
 export function AnimatedStats() {
   const stats = [
-    { value: 99, suffix: ".9%", label: "Uptime Guarantee" },
-    { value: 50, suffix: "+", label: "Enterprise Integrations" },
-    { value: 10, suffix: "x", label: "Faster Incident Resolution" },
-    { value: 24, suffix: "/7", label: "Continuous Monitoring" },
+    { value: 70, suffix: "%", label: "of raw IoT data is noisy or incomplete" },
+    { value: 85, suffix: "%", label: "reduction in data pipeline build time" },
+    { value: 10, suffix: "x", label: "faster root cause analysis" },
+    { value: 50, suffix: "+", label: "industrial data source connectors" },
   ]
 
   return (

@@ -5,19 +5,19 @@ import { CTABand } from "@/components/cta-band"
 
 const values = [
   {
-    title: "Reliability",
+    title: "Data quality first",
     description:
-      "Operations cannot afford downtime or incorrect answers. We build systems that earn trust through consistent, verifiable performance. Every output can be traced back to its sources.",
+      "Analytics built on dirty data give wrong answers. Confidently. We believe the data engineering layer is non-negotiable, and we build it before putting any agent in front of an operator.",
   },
   {
-    title: "Clarity",
+    title: "Transparency over black boxes",
     description:
-      "Complex systems should produce simple answers. We prioritize explanations over black boxes, context over raw data, and actionable insights over information overload.",
+      "Every insight the platform surfaces is traceable back to the sensor readings and records it came from. No unexplained outputs. No magic. Operators need to trust what they act on.",
   },
   {
-    title: "Adoption",
+    title: "Works with what you have",
     description:
-      "Technology only creates value when people use it. We design for real workflows, train for actual users, and measure success by adoption, not features shipped.",
+      "You've spent years building your data infrastructure. We don't ask you to replace it. We connect to it, clean what comes out, and add the context layer that makes it useful for AI.",
   },
 ]
 
@@ -26,20 +26,23 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main className="min-h-screen pt-20">
-        {/* Hero - Updated styling */}
+        {/* Hero */}
         <section className="py-24 px-4">
           <div className="max-w-4xl mx-auto text-center">
+            <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-6">
+              About ContextWeaver
+            </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-6 text-balance">
-              Built for teams running real operations
+              Built for teams who need answers, not more dashboards
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              We build AI agents that understand industrial operations because we believe the people running plants,
-              lines, and supply chains deserve tools that actually work.
+              Manufacturing plants generate enormous amounts of data. Most of it is too messy to be useful.
+              We built ContextWeaver to fix the data problem first, and then put powerful analytics on top of it.
             </p>
           </div>
         </section>
 
-        {/* Why this exists - Updated with badge chip */}
+        {/* Why this exists */}
         <section className="py-24 px-4 bg-secondary/50">
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
@@ -54,19 +57,21 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-5 text-lg text-muted-foreground leading-relaxed">
                   <p>
-                    Operations teams have spent decades collecting data. SCADA systems, historians, MES platforms, ERPs,
-                    CRMs, and countless spreadsheets capture what happens across plants and supply chains. But when
-                    something goes wrong, or when leadership asks for an explanation, teams still spend hours manually
-                    correlating across systems.
+                    Talking to manufacturing engineers, we kept hearing the same frustration: every analytics tool
+                    they tried failed in production. Not because the tools were bad. The data going in was.
+                    Missing sensor readings. Duplicate timestamps. Tags with no context. Historian values that were
+                    technically recorded but practically useless.
                   </p>
                   <p>
-                    We saw an opportunity to change this. Not by replacing existing systems, but by building a layer on
-                    top of them that creates shared context. A layer that AI agents can use to answer questions, explain
-                    situations, and take governed actions across operational and business domains.
+                    Root cause analysis, OEE monitoring, predictive maintenance: all of these tools assume you
+                    already have clean, structured, contextual data. In most manufacturing plants, you don't.
+                    Building that data infrastructure manually takes months of engineering time per system,
+                    and it breaks every time the plant changes.
                   </p>
                   <p>
-                    The goal is simple: help operations teams spend less time reconstructing the truth and more time
-                    acting on it.
+                    We built ContextWeaver to solve this at the foundation. Data Engineering Agents that
+                    automatically handle ingestion, cleaning, normalization, and context enrichment across your
+                    industrial data sources, so the analytics layer above it can actually be trusted.
                   </p>
                 </div>
               </div>
@@ -74,7 +79,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Values - Updated card styling */}
+        {/* Values */}
         <section className="py-24 px-4">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-14 text-center">
@@ -96,7 +101,7 @@ export default function AboutPage() {
         {/* CTA */}
         <CTABand
           title="Want to learn more?"
-          description="We would love to hear about your operations and explore how we might help."
+          description="Tell us about your plant's data challenges and we'll show you how Data Engineering Agents can fix the foundation."
         />
       </main>
       <Footer />

@@ -57,8 +57,8 @@ export default function SecurityPage() {
               Trust, control, auditability
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
-              Security is not optional when AI touches operational systems. The platform is built from the ground up
-              with governance, control, and transparency at its core.
+              Connecting AI agents to manufacturing systems requires strict security and governance. The platform
+              is built from the ground up to be read-only, fully auditable, and compliant with industrial standards.
             </p>
             <Button size="lg" asChild className="rounded-full px-8 gap-2">
               <a href="https://calendly.com/yuvraj-s-bhadauria/30min" target="_blank" rel="noopener noreferrer">

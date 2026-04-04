@@ -5,14 +5,13 @@ import Link from "next/link"
 import {
   ArrowUpRight,
   ChevronDown,
-  Layers,
-  RefreshCw,
+  GitBranch,
+  Wrench,
   Bell,
-  Package,
-  HeartHandshake,
-  FileCheck,
+  BarChart3,
+  FlaskConical,
+  Activity,
   ArrowRight,
-  Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,175 +23,173 @@ import { cn } from "@/lib/utils"
 
 const useCases = [
   {
-    id: "global-operations",
-    title: "Global Operations Intelligence",
+    id: "root-cause",
+    title: "Root Cause Analysis",
     description:
-      "Coordinate insights across SCADA, ERP, CRM, and SOP domains to explain system-level impact and guide leadership decisions.",
+      "Automatically trace the chain of events that caused a production incident. The RCA Agent pulls from historian data, alarm logs, and maintenance records to build a timestamped causal timeline, reducing investigation time from hours to minutes.",
     inputs: [
-      "Incident summaries from SCADA Pack",
-      "Production plans, inventory, and cost signals from ERP Pack",
-      "Customer orders, SLAs, and escalations from CRM Pack",
-      "Procedures, SOPs, and compliance context from SOP/Quality Pack",
+      "Historian tag data (pre- and post-incident)",
+      "SCADA alarm and event logs",
+      "Maintenance work orders and calibration records",
+      "Process change management (MOC) records",
     ],
     outputs: [
-      "Unified cross-domain incident and performance narrative",
-      "Operational vs business impact explanation",
-      "Constraint and tradeoff analysis across systems",
-      "Leadership-ready daily and weekly summaries",
+      "Timestamped root cause timeline",
+      "Contributing factor analysis with evidence links",
+      "Recommended corrective and preventive actions",
+      "RCA report draft ready for review",
     ],
     impact: [
-      "Faster, aligned decision-making across operations and leadership",
-      "Reduced siloed reporting and manual reconciliation",
-      "Clear prioritization of actions based on system-wide impact",
+      "10x faster average investigation time",
+      "20–40% reduction in repeat incidents",
+      "Traceable, auditable root cause evidence",
     ],
-    icon: Globe,
-    helperText: "Reasons through domain agents instead of querying raw systems directly.",
+    icon: GitBranch,
+    badge: "Demo available",
+    highlight: true,
   },
   {
     id: "troubleshooting",
-    title: "SCADA Troubleshooting Copilot",
-    description: "Guide operators through downtime events with context-aware analysis.",
-    inputs: ["SCADA alarms and events", "Historian tag data", "Maintenance records", "Previous incident reports"],
+    title: "Equipment Troubleshooting",
+    description:
+      "Guide operators through active downtime events with step-by-step, context-aware diagnostics. The Troubleshooting Agent uses live sensor data, past incidents, and SOPs to narrow the fault quickly, even for less experienced operators.",
+    inputs: [
+      "Live SCADA sensor readings",
+      "Recent alarm and event sequences",
+      "Historical incidents on the same equipment",
+      "SOP and maintenance procedure documents",
+    ],
     outputs: [
-      "Incident timeline with correlated events",
-      "Suggested checks and next steps",
-      "Similar past incidents",
-      "Draft incident summary",
+      "Ranked fault hypotheses with supporting evidence",
+      "Step-by-step diagnostic checklist",
+      "Similar past incidents and what resolved them",
+      "Draft incident summary for shift handover",
     ],
     impact: [
-      "30-50% faster mean time to resolution",
-      "Reduced reliance on senior operators during off-hours",
+      "30–50% faster mean time to resolution (MTTR)",
+      "Reduced dependency on senior experts during off-hours",
       "Consistent troubleshooting approach across shifts",
     ],
-    icon: Layers,
-  },
-  {
-    id: "root-cause",
-    title: "Root Cause + Learning Loop",
-    description: "Capture patterns, link to contributing factors, and prevent repeat issues.",
-    inputs: ["Incident history", "Process changes and MOCs", "Maintenance activities", "Operating conditions"],
-    outputs: [
-      "Root cause linkages",
-      "Contributing factor analysis",
-      "Recommended preventive actions",
-      "Knowledge base entries",
-    ],
-    impact: [
-      "20-40% reduction in repeat incidents",
-      "Faster onboarding for new reliability engineers",
-      "Institutional memory that persists through turnover",
-    ],
-    icon: RefreshCw,
+    icon: Wrench,
   },
   {
     id: "alarms",
-    title: "Alarm Hygiene & Noise Reduction",
-    description: "Identify nuisance alarms, suggest rationalization, and reduce alarm fatigue.",
+    title: "Alarm Flood Management",
+    description:
+      "Manufacturing plants drowning in alarm notifications miss the critical ones. The Alarm Management Agent identifies nuisance alarms, groups correlated events, and recommends rationalization changes to reduce alarm fatigue and improve response quality.",
     inputs: [
-      "Alarm configuration",
-      "Alarm occurrence logs",
-      "Operator acknowledgment patterns",
-      "Process state context",
+      "Alarm configuration database",
+      "Historical alarm occurrence and acknowledgment logs",
+      "Operator response time and pattern data",
+      "Process state context (operating mode, product, shift)",
     ],
     outputs: [
-      "Alarm performance metrics",
-      "Nuisance alarm candidates",
-      "Rationalization recommendations",
-      "Priority adjustment suggestions",
+      "Alarm performance KPI dashboard (EEMUA-compliant)",
+      "Nuisance alarm candidates with rationalization justification",
+      "Priority and setpoint adjustment recommendations",
+      "Alarm shelving and suppression proposals",
     ],
     impact: [
-      "30-60% reduction in alarm floods",
+      "30–60% reduction in standing and repeat alarms",
       "Improved operator response to critical alarms",
-      "Better compliance with alarm management standards",
+      "Better compliance with ISA-18.2 alarm management standards",
     ],
     icon: Bell,
   },
   {
-    id: "planning",
-    title: "Inventory + Planning Insights",
-    description: "Explain variance between plan and actual using operational evidence.",
+    id: "oee",
+    title: "OEE & Production Analytics",
+    description:
+      "Break down Overall Equipment Effectiveness into its real components. The OEE Agent pulls clean, contextualized sensor data to explain availability, performance, and quality losses, with each loss category tied back to specific events and root causes.",
     inputs: [
-      "Production plans and schedules",
-      "Actual production data",
-      "Inventory levels",
-      "Operational events and constraints",
+      "Equipment run/idle/fault state data",
+      "Production count and reject signals",
+      "Planned production schedules",
+      "Downtime event codes and durations",
     ],
     outputs: [
-      "Plan vs actual analysis with root causes",
-      "Constraint identification",
-      "Inventory risk alerts",
-      "Cost variance attribution",
+      "Real-time and historical OEE by line, cell, and shift",
+      "Top-N loss analysis with root cause evidence",
+      "Speed loss vs. quality loss attribution",
+      "Shift performance comparison reports",
     ],
     impact: [
-      "Faster monthly close and variance explanation",
-      "Proactive stockout prevention",
-      "Better alignment between operations and supply chain",
+      "Faster identification of chronic vs. sporadic losses",
+      "Data-driven prioritization of improvement projects",
+      "Reduction in manual reporting effort",
     ],
-    icon: Package,
-  },
-  {
-    id: "customer",
-    title: "Customer Impact & SLA Risk",
-    description: "Connect operational incidents to customer orders and SLA commitments.",
-    inputs: ["CRM order data", "Production schedules", "Operational incidents", "Shipping and logistics data"],
-    outputs: [
-      "Customer impact assessment",
-      "SLA risk scoring",
-      "Evidence-backed communication drafts",
-      "Escalation prioritization",
-    ],
-    impact: [
-      "Faster, clearer customer communication",
-      "Reduced SLA penalties through early intervention",
-      "Improved customer satisfaction scores",
-    ],
-    icon: HeartHandshake,
+    icon: BarChart3,
   },
   {
     id: "quality",
-    title: "SOP Guidance + CAPA Support",
-    description: "Query procedures in context and generate corrective action drafts.",
-    inputs: ["SOP documents", "Equipment state and alarms", "Operator actions", "Quality events and deviations"],
-    outputs: [
-      "Context-aware procedure guidance",
-      "CAPA draft with supporting evidence",
-      "Deviation trend analysis",
-      "Training recommendations",
+    title: "Quality Deviation Investigation",
+    description:
+      "Detect quality escapes early and link them to the process conditions that caused them. The Quality Deviation Agent correlates product quality measurements with upstream sensor readings to pinpoint root causes and generate CAPA documentation.",
+    inputs: [
+      "In-line and lab quality measurement data",
+      "Process parameter historian data",
+      "Bill of materials and batch records",
+      "SOP and quality specification documents",
     ],
-    impact: ["Fewer procedure deviations", "Faster CAPA closure", "Better audit readiness"],
-    icon: FileCheck,
+    outputs: [
+      "Quality deviation timeline with correlated process conditions",
+      "Root cause hypothesis with statistical evidence",
+      "Draft CAPA with supporting data attachments",
+      "Affected batch and product scope assessment",
+    ],
+    impact: [
+      "Earlier detection of quality drift before escapes occur",
+      "Faster CAPA closure with audit-ready evidence",
+      "Reduced scrap and rework costs",
+    ],
+    icon: FlaskConical,
+  },
+  {
+    id: "predictive",
+    title: "Predictive Health Monitoring",
+    description:
+      "Move from reactive maintenance to condition-based action. The Predictive Health Agent monitors equipment health signals over time, detects degradation trends, and recommends maintenance interventions before failures occur.",
+    inputs: [
+      "Vibration, temperature, and pressure sensor readings",
+      "Lubrication and maintenance history",
+      "Equipment nameplate and design specifications",
+      "Historical failure modes and fault signatures",
+    ],
+    outputs: [
+      "Equipment health score and trend dashboard",
+      "Degradation alerts with remaining useful life estimates",
+      "Recommended maintenance action with urgency rating",
+      "Work order draft with supporting sensor evidence",
+    ],
+    impact: [
+      "Reduction in unexpected equipment failures",
+      "Better maintenance schedule optimization",
+      "Lower maintenance cost per unit of output",
+    ],
+    icon: Activity,
   },
 ]
 
 function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
   const IconComponent = useCase.icon
-  const isFeatured = useCase.id === "global-operations"
 
   return (
     <Card
       id={useCase.id}
       className={cn(
         "group relative overflow-hidden bg-card border-border rounded-3xl transition-all duration-500 hover:shadow-xl hover:shadow-foreground/5",
-        isFeatured && "border-foreground/20 ring-1 ring-foreground/10",
+        useCase.highlight && "border-foreground/20 ring-1 ring-foreground/10",
       )}
     >
       <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-secondary/60 transition-transform duration-500 group-hover:scale-125" />
       <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-secondary/40 transition-transform duration-500 group-hover:scale-110" />
 
-      <div
-        className="absolute inset-0 opacity-[0.015] pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`,
-          backgroundSize: "24px 24px",
-        }}
-      />
-
-      {isFeatured && (
+      {useCase.badge && (
         <div className="absolute top-4 right-4 z-20">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground text-background text-xs font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-background animate-pulse" />
-            Coordinates all packs
+            {useCase.badge}
           </span>
         </div>
       )}
@@ -201,18 +198,12 @@ function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index:
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer transition-colors py-8 px-8 relative z-10">
             <div className="flex items-start gap-5">
-              <div
-                className={cn(
-                  "w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3",
-                  isFeatured && "w-16 h-16 rounded-2xl",
-                )}
-              >
-                <IconComponent className={cn("w-6 h-6", isFeatured && "w-7 h-7")} />
+              <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <IconComponent className="w-6 h-6" />
               </div>
-
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-4 mb-1">
-                  <CardTitle className={cn("text-xl", isFeatured && "text-2xl")}>{useCase.title}</CardTitle>
+                  <CardTitle className="text-xl">{useCase.title}</CardTitle>
                   <div
                     className={cn(
                       "w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 border border-border transition-all duration-300",
@@ -235,12 +226,7 @@ function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index:
 
         <CollapsibleContent>
           <CardContent className="pt-0 pb-8 px-8 relative z-10">
-            <div
-              className={cn(
-                "grid md:grid-cols-3 gap-5 pt-6 border-t border-border/50",
-                isFeatured ? "ml-[84px]" : "ml-[76px]",
-              )}
-            >
+            <div className="grid md:grid-cols-3 gap-5 pt-6 border-t border-border/50 ml-[76px]">
               <div className="bg-secondary/50 rounded-2xl p-5 border border-border/30">
                 <h4 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-foreground" />
@@ -286,12 +272,6 @@ function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index:
                 </ul>
               </div>
             </div>
-
-            {useCase.helperText && (
-              <p className={cn("mt-5 text-xs text-muted-foreground italic", isFeatured ? "ml-[84px]" : "ml-[76px]")}>
-                {useCase.helperText}
-              </p>
-            )}
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
@@ -306,12 +286,15 @@ export default function UseCasesPage() {
       <main className="min-h-screen pt-20">
         <section className="py-24 px-4">
           <div className="max-w-4xl mx-auto text-center">
+            <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-6">
+              Use cases
+            </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-6 text-balance">
-              Use cases for every team
+              Analytics that actually work
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
-              From floor operators troubleshooting downtime to leadership reviewing performance, the platform adapts to
-              the workflows that matter to your organization.
+              Every use case below depends on clean, contextualized IoT data. ContextWeaver handles the data
+              engineering layer first, so these agents deliver reliable answers, not hallucinations on noisy signals.
             </p>
             <Button size="lg" asChild className="rounded-full px-8 gap-2">
               <a href="https://calendly.com/yuvraj-s-bhadauria/30min" target="_blank" rel="noopener noreferrer">
@@ -334,7 +317,7 @@ export default function UseCasesPage() {
 
         <CTABand
           title="Have a different use case in mind?"
-          description="We work with teams to identify high-value applications and build the context layer to support them."
+          description="We work with manufacturing teams to identify the highest-value applications and build the data engineering layer to support them reliably."
         />
       </main>
       <Footer />

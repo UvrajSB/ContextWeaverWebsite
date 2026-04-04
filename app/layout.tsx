@@ -11,9 +11,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "ContextWeaver - AI Agents for Industrial Operations",
+  title: "ContextWeaver - Data Engineering Agents for Manufacturing IoT",
   description:
-    "Connect SCADA, historians, MES, ERP, CRM, and SOPs so operators, engineers, and leadership can make decisions from the same story.",
+    "IoT data is messy. ContextWeaver builds data engineering agents that clean, structure, and contextualize sensor data from manufacturing plants, so your RCA, troubleshooting, and analytics tools actually work.",
   generator: 'v0.app',
 }
 

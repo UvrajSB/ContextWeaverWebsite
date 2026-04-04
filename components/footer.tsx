@@ -2,10 +2,12 @@ import Link from "next/link"
 
 const footerLinks = {
   "Use Cases": [
-    { label: "Troubleshooting", href: "/use-cases#troubleshooting" },
     { label: "Root Cause Analysis", href: "/use-cases#root-cause" },
-    { label: "Alarm Management", href: "/use-cases#alarms" },
-    { label: "Planning Insights", href: "/use-cases#planning" },
+    { label: "Equipment Troubleshooting", href: "/use-cases#troubleshooting" },
+    { label: "Alarm Flood Management", href: "/use-cases#alarms" },
+    { label: "OEE & Production Analytics", href: "/use-cases#oee" },
+    { label: "Quality Deviation", href: "/use-cases#quality" },
+    { label: "Predictive Health", href: "/use-cases#predictive" },
   ],
   Resources: [
     { label: "Architecture", href: "/architecture" },
@@ -36,7 +38,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              AI agents for industrial operations, built on a shared context layer.
+              Data Engineering Agents that clean and structure IoT data from manufacturing plants, so your analytics actually work.
             </p>
           </div>
 
