@@ -11,10 +11,13 @@ import {
   BarChart3,
   FlaskConical,
   Activity,
+  CheckCircle2,
   ArrowRight,
+  Database,
+  Zap,
 } from "lucide-react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -175,20 +178,28 @@ function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index:
   const IconComponent = useCase.icon
 
   return (
-    <Card
+    <motion.div
       id={useCase.id}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: index * 0.06 }}
       className={cn(
-        "group relative overflow-hidden bg-card border-border rounded-3xl transition-all duration-500 hover:shadow-xl hover:shadow-foreground/5",
-        useCase.highlight && "border-foreground/20 ring-1 ring-foreground/10",
+        "group relative bg-card border rounded-2xl overflow-hidden transition-all duration-300",
+        useCase.highlight
+          ? "border-primary/30 shadow-md shadow-primary/5"
+          : "border-border hover:border-border/80 hover:shadow-sm",
       )}
     >
-      <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-secondary/60 transition-transform duration-500 group-hover:scale-125" />
-      <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-secondary/40 transition-transform duration-500 group-hover:scale-110" />
+      {/* Subtle teal glow for highlighted card */}
+      {useCase.highlight && (
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-primary/6 blur-3xl pointer-events-none" />
+      )}
 
       {useCase.badge && (
-        <div className="absolute top-4 right-4 z-20">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground text-background text-xs font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-background animate-pulse" />
+        <div className="absolute top-5 right-5 z-20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             {useCase.badge}
           </span>
         </div>
@@ -196,86 +207,102 @@ function UseCaseCard({ useCase, index }: { useCase: (typeof useCases)[0]; index:
 
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer transition-colors py-8 px-8 relative z-10">
+          <div className="cursor-pointer px-7 py-6 relative z-10">
             <div className="flex items-start gap-5">
-              <div className="w-14 h-14 rounded-2xl bg-foreground text-background flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <IconComponent className="w-6 h-6" />
+              <div className={cn(
+                "w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-105",
+                useCase.highlight
+                  ? "bg-primary/15 text-primary"
+                  : "bg-secondary text-foreground"
+              )}>
+                <IconComponent className="w-5 h-5" />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4 mb-1">
-                  <CardTitle className="text-xl">{useCase.title}</CardTitle>
-                  <div
-                    className={cn(
-                      "w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 border border-border transition-all duration-300",
-                      isOpen && "bg-foreground border-foreground",
-                    )}
-                  >
-                    <ChevronDown
-                      className={cn(
-                        "w-5 h-5 text-foreground transition-all duration-300",
-                        isOpen && "rotate-180 text-background",
-                      )}
-                    />
-                  </div>
+              <div className="flex-1 min-w-0 pr-10">
+                <div className="flex items-center gap-3 mb-1.5">
+                  <h3 className="text-lg font-bold tracking-tight text-foreground">{useCase.title}</h3>
                 </div>
-                <p className="text-muted-foreground text-left">{useCase.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{useCase.description}</p>
+              </div>
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border transition-all duration-300 mt-0.5",
+                  isOpen
+                    ? "bg-primary border-primary text-primary-foreground"
+                    : "bg-secondary border-border text-muted-foreground",
+                )}
+              >
+                <ChevronDown
+                  className={cn(
+                    "w-4 h-4 transition-transform duration-300",
+                    isOpen && "rotate-180",
+                  )}
+                />
               </div>
             </div>
-          </CardHeader>
+          </div>
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <CardContent className="pt-0 pb-8 px-8 relative z-10">
-            <div className="grid md:grid-cols-3 gap-5 pt-6 border-t border-border/50 ml-[76px]">
-              <div className="bg-secondary/50 rounded-2xl p-5 border border-border/30">
-                <h4 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-foreground" />
-                  Inputs
-                </h4>
-                <ul className="space-y-2.5">
+          <div className="px-7 pb-7 relative z-10">
+            <div className="grid md:grid-cols-3 gap-3 pt-5 border-t border-border/50 ml-16">
+              {/* Inputs */}
+              <div className="rounded-xl p-4 bg-secondary/40 border border-border/40">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                    <Database className="w-3.5 h-3.5" />
+                  </div>
+                  <h4 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Inputs</h4>
+                </div>
+                <ul className="space-y-2">
                   {useCase.inputs.map((input) => (
-                    <li key={input} className="text-sm text-muted-foreground flex items-start gap-2.5">
-                      <ArrowRight className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-foreground/40" />
+                    <li key={input} className="text-xs text-muted-foreground flex items-start gap-2">
+                      <ArrowRight className="w-3 h-3 mt-0.5 flex-shrink-0 text-blue-500/60" />
                       {input}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-secondary/50 rounded-2xl p-5 border border-border/30">
-                <h4 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-foreground" />
-                  Outputs
-                </h4>
-                <ul className="space-y-2.5">
+              {/* Outputs */}
+              <div className="rounded-xl p-4 bg-secondary/40 border border-border/40">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                    <Zap className="w-3.5 h-3.5" />
+                  </div>
+                  <h4 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Outputs</h4>
+                </div>
+                <ul className="space-y-2">
                   {useCase.outputs.map((output) => (
-                    <li key={output} className="text-sm text-muted-foreground flex items-start gap-2.5">
-                      <ArrowRight className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-foreground/40" />
+                    <li key={output} className="text-xs text-muted-foreground flex items-start gap-2">
+                      <ArrowRight className="w-3 h-3 mt-0.5 flex-shrink-0 text-primary/60" />
                       {output}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-foreground text-background rounded-2xl p-5">
-                <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-background" />
-                  Impact
-                </h4>
-                <ul className="space-y-2.5">
+              {/* Impact */}
+              <div className="rounded-xl p-4 bg-primary/8 border border-primary/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                  <h4 className="text-xs font-semibold tracking-widest text-primary/80 uppercase">Impact</h4>
+                </div>
+                <ul className="space-y-2">
                   {useCase.impact.map((item) => (
-                    <li key={item} className="text-sm text-background/80 flex items-start gap-2.5">
-                      <ArrowRight className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-background/60" />
+                    <li key={item} className="text-xs text-foreground flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-          </CardContent>
+          </div>
         </CollapsibleContent>
       </Collapsible>
-    </Card>
+    </motion.div>
   )
 }
 
@@ -284,30 +311,40 @@ export default function UseCasesPage() {
     <>
       <Navbar />
       <main className="min-h-screen pt-20">
-        <section className="py-24 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-6">
-              Use cases
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-6 text-balance">
-              Analytics that actually work
-            </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
-              Every use case below depends on clean, contextualized IoT data. ContextWeaver handles the data
-              engineering layer first, so these agents deliver reliable answers, not hallucinations on noisy signals.
-            </p>
-            <Button size="lg" asChild className="rounded-full px-8 gap-2">
-              <a href="https://calendly.com/yuvraj-s-bhadauria/30min" target="_blank" rel="noopener noreferrer">
-                Discuss your use case
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-            </Button>
+        {/* Hero */}
+        <section className="py-20 px-4 border-b border-border/50">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid lg:grid-cols-5 gap-10 items-end">
+              <div className="lg:col-span-3">
+                <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-5">
+                  Use cases
+                </span>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tighter leading-[1.05] mb-0">
+                  Analytics that
+                  <br />
+                  <span className="text-muted-foreground">actually work</span>
+                </h1>
+              </div>
+              <div className="lg:col-span-2">
+                <p className="text-base text-muted-foreground leading-relaxed mb-6">
+                  Every use case depends on clean, contextualized IoT data. ContextWeaver handles the data
+                  engineering layer first, so these agents deliver reliable answers, not hallucinations on noisy signals.
+                </p>
+                <Button size="lg" asChild className="btn-gradient rounded-full px-8 gap-2 group">
+                  <a href="https://calendly.com/yuvraj-s-bhadauria/30min" target="_blank" rel="noopener noreferrer">
+                    Discuss your use case
+                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </a>
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="py-24 px-4 bg-secondary/50">
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-5">
+        {/* Use case cards */}
+        <section className="py-16 px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="space-y-3">
               {useCases.map((useCase, index) => (
                 <UseCaseCard key={useCase.id} useCase={useCase} index={index} />
               ))}
