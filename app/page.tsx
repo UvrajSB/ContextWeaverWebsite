@@ -203,53 +203,92 @@ function AnalyticsAgentsTabs({ agents, isInView }: { agents: typeof analyticsAge
       animate={isInView ? "visible" : "hidden"}
       variants={fadeInUp}
       transition={{ duration: 0.6, delay: 0.2 }}
+      className="grid grid-cols-1 lg:grid-cols-5 gap-4"
     >
-      {/* Tab buttons */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
+      {/* Left sidebar — agent list */}
+      <div className="lg:col-span-2 flex flex-col gap-1.5">
         {agents.map((agent, i) => {
           const Icon = agent.icon
+          const isActive = active === i
           return (
             <button
               key={agent.name}
               onClick={() => setActive(i)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                active === i
-                  ? "bg-foreground text-background shadow-sm"
-                  : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all duration-200 group ${
+                isActive
+                  ? "bg-card border border-primary/25 shadow-sm"
+                  : "hover:bg-card/60 border border-transparent"
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
-              {agent.name}
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                isActive ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground group-hover:text-foreground"
+              }`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-medium truncate ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
+                  {agent.name}
+                </p>
+              </div>
+              {agent.badge && (
+                <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full flex-shrink-0">
+                  Demo
+                </span>
+              )}
+              {isActive && (
+                <div className="w-1 h-5 rounded-full bg-primary flex-shrink-0" />
+              )}
             </button>
           )
         })}
       </div>
 
-      {/* Active agent panel */}
+      {/* Right content panel */}
       <motion.div
         key={active}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-card border border-border rounded-3xl p-8 flex flex-col sm:flex-row gap-8 items-start max-w-3xl mx-auto"
+        initial={{ opacity: 0, x: 10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.25 }}
+        className="lg:col-span-3 bg-card border border-border rounded-2xl p-8 flex flex-col"
       >
-        <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-          <ActiveIcon className="w-7 h-7" />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
-            <h3 className="text-xl font-semibold text-foreground">{activeAgent.name}</h3>
-            {activeAgent.badge && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-background animate-pulse" />
-                {activeAgent.badge}
-              </span>
-            )}
+        {/* Header */}
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+            <ActiveIcon className="w-6 h-6" />
           </div>
-          <p className="text-muted-foreground leading-relaxed mb-5">{activeAgent.description}</p>
+          <div>
+            <div className="flex items-center gap-2.5 mb-1">
+              <h3 className="text-xl font-bold tracking-tight text-foreground">{activeAgent.name}</h3>
+              {activeAgent.badge && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  {activeAgent.badge}
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">{activeAgent.description}</p>
+          </div>
+        </div>
+
+        {/* Capabilities */}
+        {activeAgent.capabilities && (
+          <div className="mb-6">
+            <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase mb-3">Capabilities</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {activeAgent.capabilities.map((cap) => (
+                <div key={cap} className="flex items-start gap-2.5 p-3 rounded-xl bg-secondary/50">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground leading-snug">{cap}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-auto pt-2">
           <Link
             href={activeAgent.link}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:underline underline-offset-4"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4"
           >
             See full use case
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -257,7 +296,8 @@ function AnalyticsAgentsTabs({ agents, isInView }: { agents: typeof analyticsAge
         </div>
       </motion.div>
 
-      <div className="text-center mt-8">
+      {/* Explore button below on mobile, below grid on desktop */}
+      <div className="lg:col-span-5 text-center mt-2">
         <Button variant="outline" size="lg" asChild className="rounded-full px-8 bg-transparent">
           <Link href="/use-cases">Explore all use cases</Link>
         </Button>
