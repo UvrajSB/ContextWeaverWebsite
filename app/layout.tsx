@@ -1,13 +1,14 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
+import { Outfit } from "next/font/google"
 import "./globals.css"
 import { ScrollProgress } from "@/components/scroll-progress"
 import { BackToTop } from "@/components/back-to-top"
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
@@ -30,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${outfit.variable} font-sans antialiased`}>
         <ScrollProgress />
         <div className="noise-overlay" aria-hidden="true" />
         {children}

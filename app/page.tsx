@@ -299,7 +299,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.1 }}
-                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground tracking-tight mb-6 leading-tight"
+                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground tracking-tighter mb-6 leading-[1.05]"
                 >
                   IoT Data is Messy.
                   <br />
@@ -383,13 +383,13 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="text-center mb-14"
             >
-              <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-5">
+              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
                 The problem
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5">
                 Why manufacturing analytics keeps failing
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
                 Before any analytics can work, the data underneath has to be trustworthy. In most plants, it isn't.
               </p>
             </motion.div>
@@ -398,7 +398,7 @@ export default function HomePage() {
               initial="hidden"
               animate={problemInView ? "visible" : "hidden"}
               variants={staggerContainer}
-              className="grid md:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
             >
               {dataProblems.map((problem, i) => {
                 const Icon = problem.icon
@@ -406,16 +406,17 @@ export default function HomePage() {
                   <motion.div
                     key={problem.title}
                     variants={fadeInUp}
-                    transition={{ duration: 0.6, delay: i * 0.1 }}
-                    className="flex flex-col items-center text-center p-8 rounded-3xl border border-border bg-card group hover:shadow-md transition-all duration-300"
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    className="relative bg-card border border-border rounded-2xl p-8 flex flex-col gap-6 group hover:bg-secondary/30 transition-colors duration-300 overflow-hidden"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="w-7 h-7 text-foreground" />
+                    <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
+                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-5 h-5 text-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-4">{problem.title}</h3>
-                    <div className="mt-auto pt-4 border-t border-border/50 w-full">
-                      <p className="text-3xl font-bold text-foreground mb-1">{problem.stat}</p>
-                      <p className="text-sm text-muted-foreground">{problem.statLabel}</p>
+                    <div>
+                      <p className="text-5xl font-bold tracking-tight text-foreground leading-none mb-3">{problem.stat}</p>
+                      <p className="text-sm font-medium text-foreground mb-1">{problem.title}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{problem.statLabel}</p>
                     </div>
                   </motion.div>
                 )
@@ -474,42 +475,74 @@ export default function HomePage() {
               animate={deAgentsInView ? "visible" : "hidden"}
               variants={fadeInUp}
               transition={{ duration: 0.6 }}
-              className="text-center mb-14"
+              className="mb-12"
             >
-              <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-5">
+              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
                 Data Engineering Agents
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-                Build a data foundation you can trust
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Before any analytics can work, the data underneath has to be clean, normalized, and contextual.
-                These agents handle that automatically, across every sensor, tag, and system in your plant.
-              </p>
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-lg">
+                  Build a data foundation you can trust
+                </h2>
+                <p className="text-base text-muted-foreground max-w-xs leading-relaxed md:text-right">
+                  Clean, normalize, and contextualize every sensor and tag automatically.
+                </p>
+              </div>
             </motion.div>
 
+            {/* Asymmetric grid: 1 featured left + 2 stacked right */}
             <motion.div
               initial="hidden"
               animate={deAgentsInView ? "visible" : "hidden"}
               variants={staggerContainer}
-              className="grid md:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-5 gap-4"
             >
-              {dataEngineeringAgents.map((agent) => {
+              {/* Featured — Pipeline Builder */}
+              {(() => {
+                const agent = dataEngineeringAgents[0]
                 const Icon = agent.icon
                 return (
-                  <motion.div key={agent.name} variants={fadeInUp} transition={{ duration: 0.6 }}>
-                    <Card className="card-hover h-full bg-card border-border rounded-3xl group">
-                      <CardContent className="pt-8 pb-8 px-8">
-                        <div className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-foreground mb-3">{agent.name}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{agent.description}</p>
-                      </CardContent>
-                    </Card>
+                  <motion.div
+                    key={agent.name}
+                    variants={fadeInUp}
+                    transition={{ duration: 0.6 }}
+                    className="md:col-span-3"
+                  >
+                    <div className="card-spotlight card-hover h-full bg-card border border-border rounded-2xl p-10 group relative overflow-hidden">
+                      <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+                      <div className="w-12 h-12 rounded-xl bg-foreground text-background flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Featured</p>
+                      <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">{agent.name}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{agent.description}</p>
+                    </div>
                   </motion.div>
                 )
-              })}
+              })()}
+
+              {/* Two stacked cards */}
+              <div className="md:col-span-2 flex flex-col gap-4">
+                {dataEngineeringAgents.slice(1).map((agent, i) => {
+                  const Icon = agent.icon
+                  return (
+                    <motion.div
+                      key={agent.name}
+                      variants={fadeInUp}
+                      transition={{ duration: 0.6, delay: 0.1 + i * 0.1 }}
+                      className="flex-1"
+                    >
+                      <div className="card-spotlight card-hover h-full bg-card border border-border rounded-2xl p-7 group">
+                        <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <h3 className="text-lg font-bold tracking-tight text-foreground mb-2">{agent.name}</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
             </motion.div>
           </div>
         </section>
@@ -524,13 +557,13 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="text-center mb-14"
             >
-              <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-5">
+              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
                 Analytics & Intelligence Agents
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5">
                 RCA, troubleshooting, and production intelligence
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
                 Specialized agents for every manufacturing use case, from diagnosing a downtime event in minutes
                 to catching a quality deviation before it escapes the line.
               </p>
@@ -621,10 +654,10 @@ export default function HomePage() {
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               >
-                <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-6">
+                <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
                   Built for the plant floor
                 </span>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-6">
                   Where every minute of downtime costs money
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -667,57 +700,44 @@ export default function HomePage() {
         </section>
 
         {/* ── Integrations ── */}
-        <section ref={integrationsRef} className="py-24 px-4 border-b border-border/50">
-          <div className="max-w-5xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate={integrationsInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-                Connects to what you already run
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                No rip-and-replace. Native connectors for the industrial systems already in your plant.
-              </p>
-            </motion.div>
+        <section ref={integrationsRef} className="py-20 px-4 border-b border-border/50 overflow-hidden">
+          <motion.div
+            initial="hidden"
+            animate={integrationsInView ? "visible" : "hidden"}
+            variants={fadeInUp}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-10"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
+              Connects to what you already run
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              No rip-and-replace. Native connectors for your existing industrial systems.
+            </p>
+          </motion.div>
 
-            <motion.div
-              initial="hidden"
-              animate={integrationsInView ? "visible" : "hidden"}
-              variants={staggerContainer}
-              className="flex flex-wrap justify-center gap-3"
-            >
-              {integrations.map((integration) => (
-                <motion.div
-                  key={integration.name}
-                  variants={fadeIn}
-                  className="px-5 py-2.5 rounded-full bg-secondary border border-border text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors"
-                >
-                  {integration.name}
-                </motion.div>
-              ))}
-              <motion.div
-                variants={fadeIn}
-                className="px-5 py-2.5 rounded-full border border-dashed border-border text-sm text-muted-foreground"
-              >
-                + many more
-              </motion.div>
-            </motion.div>
+          {/* Marquee strip */}
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="flex overflow-hidden">
+              <div className="animate-marquee flex gap-3 whitespace-nowrap">
+                {[...integrations, ...integrations].map((integration, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center px-5 py-2.5 rounded-full bg-secondary border border-border text-sm font-medium text-foreground flex-shrink-0"
+                  >
+                    {integration.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
 
-            <motion.div
-              initial="hidden"
-              animate={integrationsInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-10 text-center"
-            >
-              <Link href="/architecture" className="text-sm font-medium text-foreground hover:underline underline-offset-4">
-                See the full architecture →
-              </Link>
-            </motion.div>
+          <div className="text-center mt-8">
+            <Link href="/architecture" className="text-sm font-medium text-foreground hover:underline underline-offset-4">
+              See the full architecture →
+            </Link>
           </div>
         </section>
 

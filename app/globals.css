@@ -54,9 +54,9 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", "Inter Fallback", system-ui, sans-serif;
-  --font-display: "Inter", "Inter Fallback", system-ui, sans-serif;
-  --font-heading: "Inter", "Inter Fallback", system-ui, sans-serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -383,6 +383,36 @@ html {
 .btn-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px -5px oklch(0.7 0.18 55 / 0.4);
+}
+
+/* Spotlight border card */
+.card-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+.card-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), oklch(0.55 0.15 195 / 0.25), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Dot grid background */
+.dot-grid {
+  background-image: radial-gradient(circle, oklch(0.15 0 0 / 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 /* Animated counter */
