@@ -4,32 +4,44 @@ import Link from "next/link"
 import { useRef, useState } from "react"
 import {
   ArrowUpRight,
-  Database,
-  Wrench,
-  Bell,
+  Cpu,
+  Factory,
+  Building2,
+  Layers,
+  Sparkles,
+  ShieldCheck,
+  Lock,
+  Cog,
+  GraduationCap,
+  Users,
+  BrainCircuit,
+  Network,
+  GitBranch,
+  Workflow,
+  Plus,
+  MapPin,
+  Quote,
   TrendingUp,
+  Radar,
   Shield,
   Zap,
-  AlertTriangle,
-  GitBranch,
-  BarChart3,
-  Cpu,
-  Network,
   FlaskConical,
-  Activity,
+  Gauge,
 } from "lucide-react"
 import { motion, useInView } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CTABand } from "@/components/cta-band"
-import { AnimatedStats } from "@/components/animated-stats"
-import { HeroAnalysisCard } from "@/components/hero-analysis-card"
+import { HeroStackDiagram } from "@/components/hero-stack-diagram"
+import { AgentsAtWorkDashboard } from "@/components/agents-at-work-dashboard"
+import { SignalFlow } from "@/components/signal-flow"
+import { LLMModelDiagram } from "@/components/llm-model-diagram"
 
-// Animation variants
+const EASE = [0.22, 1, 0.36, 1] as const
+
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 },
 }
 
@@ -37,287 +49,353 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.1 },
   },
 }
 
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-}
+const heroStats = [
+  { value: "3", label: "Stack layers covered" },
+  { value: "12+", label: "Domain agents out of the box" },
+  { value: "100%", label: "On-prem / VPC deployable" },
+  { value: "$0", label: "Per-token inference cost" },
+]
 
-const dataProblems = [
+// Agent catalog grouped by stack layer
+const agentLayers = [
   {
-    icon: AlertTriangle,
-    title: "Sensor data you can't trust",
-    stat: "~40%",
-    statLabel: "of sensor readings need cleaning before use",
+    key: "scada",
+    label: "SCADA / Historians",
+    icon: Cpu,
+    index: "L1",
+    blurb: "Agents that live on top of your sensors and historians — where the raw signal lives.",
+    agents: [
+      { name: "Sensor Cleanse", line: "Removes noise, fills gaps, normalizes units" },
+      { name: "Alarm Rationalizer", line: "Cuts floods, groups correlated events, proposes suppression" },
+      { name: "Asset Health", line: "Vibration, temp, current trends → remaining useful life" },
+    ],
   },
   {
-    icon: GitBranch,
-    title: "Context lives in silos",
-    stat: "60%",
-    statLabel: "of investigation time spent just gathering data",
+    key: "mes",
+    label: "MES",
+    icon: Factory,
+    index: "L2",
+    blurb: "Agents on the execution layer — where work orders, batches, and production intelligence live.",
+    agents: [
+      { name: "OEE Analytics", line: "Availability / performance / quality loss waterfall by shift" },
+      { name: "Quality Deviation", line: "In-line + lab correlation, CAPA drafts with evidence" },
+      { name: "Scheduling", line: "Changeover-aware schedule rebalancing on disruption" },
+    ],
   },
   {
-    icon: Wrench,
-    title: "Hand-built pipelines break fast",
-    stat: "70%",
-    statLabel: "of data engineering effort is maintenance, not insight",
+    key: "erp",
+    label: "ERP / CRM",
+    icon: Building2,
+    index: "L3",
+    blurb: "Agents that reason over orders, inventory, margin, and customer signals.",
+    agents: [
+      { name: "Order Intelligence", line: "Order-to-fulfil risk, promise date confidence" },
+      { name: "Margin Agent", line: "Per-SKU margin attribution, drift detection" },
+      { name: "Inventory Agent", line: "Coverage vs. demand, stockout early warning" },
+    ],
+  },
+  {
+    key: "cross",
+    label: "Cross-stack",
+    icon: Layers,
+    index: "L∞",
+    blurb: "Agents that draw context from every layer below to reason end-to-end.",
+    agents: [
+      { name: "Root Cause Agent", line: "SCADA + MES + ERP: traces incidents to process or supply cause" },
+      { name: "Demand-to-Production", line: "ERP + MES: short-horizon plan updates as demand shifts" },
+      { name: "Compliance Agent", line: "All layers: audit trails, evidence packs, deviation flags" },
+    ],
   },
 ]
 
-const dataEngineeringAgents = [
+const industries = [
   {
-    icon: Database,
-    name: "Pipeline Builder Agent",
-    description: "Auto-discovers sources, infers schemas, and builds cleaning pipelines. No hand-coding.",
-  },
-  {
-    icon: Shield,
-    name: "Data Quality Agent",
-    description: "Monitors ingested data continuously for gaps, drift, and anomalies before they reach analytics.",
-  },
-  {
-    icon: Network,
-    name: "Context Enrichment Agent",
-    description: "Links raw tags to physical assets, production lines, and business outcomes across OT and IT.",
-  },
-]
-
-const analyticsAgents = [
-  {
-    icon: GitBranch,
-    name: "RCA Agent",
-    description:
-      "Traces the chain of events that led to an incident, surfacing the true root cause with a timestamped evidence trail.",
-    capabilities: [
-      "Multi-system causal chain analysis",
-      "Timestamped incident timeline",
-      "Contributing factor ranking",
-      "RCA report generation",
+    name: "Discrete Manufacturing",
+    icon: Cpu,
+    headline: "Automotive, electronics, assembly. Cycle time is the KPI.",
+    points: [
+      "SCADA layer: station-level drift and cycle timing",
+      "MES layer: first-pass yield + OEE by line and product",
+      "ERP layer: order-to-fulfil promise dates under disruption",
     ],
-    link: "/use-cases#root-cause",
-    badge: "Demo available",
   },
   {
-    icon: Wrench,
-    name: "Troubleshooting Agent",
-    description:
-      "Guides operators through active downtime with step-by-step diagnostics drawn from live data, past incidents, and SOPs.",
-    capabilities: [
-      "Ranked fault hypotheses",
-      "Step-by-step diagnostic checklist",
-      "Similar past incident retrieval",
-      "Shift handover summary draft",
-    ],
-    link: "/use-cases#troubleshooting",
-  },
-  {
-    icon: Bell,
-    name: "Alarm Management Agent",
-    description:
-      "Cuts through alarm floods by identifying nuisance alarms, grouping correlated events, and prioritizing what truly needs attention.",
-    capabilities: [
-      "EEMUA-compliant alarm KPIs",
-      "Nuisance alarm identification",
-      "Alarm rationalization proposals",
-      "Suppression and shelving logic",
-    ],
-    link: "/use-cases#alarms",
-  },
-  {
-    icon: BarChart3,
-    name: "OEE Analytics Agent",
-    description:
-      "Breaks down availability, performance, and quality losses with each loss category tied to specific events and causes.",
-    capabilities: [
-      "Real-time OEE by line and shift",
-      "Top-N loss waterfall analysis",
-      "Speed vs. quality loss attribution",
-      "Shift performance comparison",
-    ],
-    link: "/use-cases#oee",
-  },
-  {
+    name: "Process Industries",
     icon: FlaskConical,
-    name: "Quality Deviation Agent",
-    description:
-      "Detects quality escapes early, correlates deviations to process conditions, and generates CAPA drafts with supporting evidence.",
-    capabilities: [
-      "In-line and lab data correlation",
-      "Deviation-to-process root cause",
-      "CAPA draft with data attachments",
-      "Affected batch scope assessment",
+    headline: "Continuous processes where one deviation costs a batch.",
+    points: [
+      "SCADA layer: alarm rationalization, excursion detection",
+      "MES layer: batch genealogy, quality escape isolation",
+      "ERP layer: yield-and-loss accounting to COGS",
     ],
-    link: "/use-cases#quality",
   },
   {
-    icon: Activity,
-    name: "Predictive Health Agent",
-    description:
-      "Monitors equipment health signals over time, flags degradation trends, and recommends maintenance before failures occur.",
-    capabilities: [
-      "Health score and trend dashboard",
-      "Remaining useful life estimates",
-      "Maintenance action recommendations",
-      "Work order draft with evidence",
+    name: "Food &amp; Beverage",
+    icon: Zap,
+    headline: "High-SKU lines with strict sanitation and changeover demands.",
+    points: [
+      "SCADA layer: changeover sequence + CIP verification",
+      "MES layer: traceability across batches and lots",
+      "ERP layer: expiry-aware inventory and allocation",
     ],
-    link: "/use-cases#predictive",
+  },
+  {
+    name: "Oil, Gas &amp; Chemicals",
+    icon: Gauge,
+    headline: "Safety-critical assets with heavy alarm loads and compliance scrutiny.",
+    points: [
+      "SCADA layer: EEMUA-191 KPIs, interlock sequence reconstruction",
+      "MES layer: campaign accounting, spec conformance",
+      "ERP layer: margin-aware production sequencing",
+    ],
   },
 ]
 
-const steps = [
-  { step: 1, title: "Connect", description: "SCADA, historians, MES, ERP via native connectors" },
-  { step: 2, title: "Clean", description: "Agents normalize, validate, and score data quality" },
-  { step: 3, title: "Enrich", description: "Tags linked to assets, lines, and business context" },
-  { step: 4, title: "Analyze", description: "RCA, troubleshooting, and production agents run on clean data" },
-  { step: 5, title: "Improve", description: "Feedback refines models and expands coverage over time" },
+const outcomes = [
+  {
+    title: "Alarm flood rationalization",
+    metric: "-62%",
+    metricLabel: "Nuisance alarms",
+    description: "Identified 400+ chattering alarms and generated suppression logic in one review cycle on the SCADA layer.",
+  },
+  {
+    title: "Downtime investigation",
+    metric: "-78%",
+    metricLabel: "RCA time",
+    description: "Cross-stack RCA agent reduced multi-team investigations from 6 hours to under 10 minutes.",
+  },
+  {
+    title: "Order-to-fulfil confidence",
+    metric: "+18pp",
+    metricLabel: "Promise-date accuracy",
+    description: "ERP agents reconciled with MES in real time, catching at-risk orders one shift earlier.",
+  },
+  {
+    title: "Packaging OEE uplift",
+    metric: "+4.2pp",
+    metricLabel: "OEE points",
+    description: "Speed-loss attribution on the MES layer pointed to one upstream feeder; fix moved OEE from 82.1% to 86.3%.",
+  },
+  {
+    title: "Per-query cost",
+    metric: "$0",
+    metricLabel: "On SLM inference",
+    description: "Fine-tuned small language models remove per-token cost; ROI curves stop flattening at scale.",
+  },
 ]
 
-const integrations = [
-  { name: "OSIsoft PI" },
-  { name: "Ignition" },
-  { name: "Wonderware" },
-  { name: "GE iFIX" },
-  { name: "Rockwell FT" },
-  { name: "SAP" },
-  { name: "Oracle" },
-  { name: "MS Dynamics" },
-  { name: "ServiceNow" },
-  { name: "Azure IoT" },
-  { name: "AWS IoT" },
-  { name: "OPC-UA" },
+const trustPoints = [
+  "All models fine-tuned and hosted on your infra — data never leaves",
+  "Read-only source connections — no migration, no writes",
+  "On-prem, VPC, or SaaS deployment options",
+  "SOC 2 aligned controls, role-based access, audit logging",
+  "Native connectors for PI, Ignition, Wonderware, Rockwell, SAP, Dynamics",
+  "Deploys in days, not quarters",
 ]
 
-function AnalyticsAgentsTabs({ agents, isInView }: { agents: typeof analyticsAgents; isInView: boolean }) {
+const slmPillars = [
+  {
+    icon: Lock,
+    title: "Private by default",
+    description: "SLMs fine-tuned and served on your infrastructure. No data leaves the plant, VPC, or region.",
+  },
+  {
+    icon: BrainCircuit,
+    title: "No per-token bill",
+    description: "Inference cost is CPU/GPU cycles, not API calls. Agent chatter at scale stops being a line item.",
+  },
+  {
+    icon: Cog,
+    title: "Tuned on your data",
+    description: "Your tag naming, your shift language, your SOPs. The model learns the vocabulary of your plant.",
+  },
+]
+
+function SectionLabel({ index, children }: { index: string; children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-3 text-[11px] font-medium tracking-[0.2em] text-muted-foreground uppercase mb-5">
+      <span className="w-1.5 h-1.5 rounded-full bg-[var(--orange)]" />
+      <span className="font-mono tabular-nums">{index}</span>
+      <span className="w-6 h-px bg-border" />
+      <span>{children}</span>
+    </div>
+  )
+}
+
+function AgentCatalogTabs({ isInView }: { isInView: boolean }) {
   const [active, setActive] = useState(0)
-  const activeAgent = agents[active]
-  const ActiveIcon = activeAgent.icon
+  const current = agentLayers[active]
+  const ActiveIcon = current.icon
 
   return (
     <motion.div
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={fadeInUp}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="grid grid-cols-1 lg:grid-cols-5 gap-4"
+      transition={{ duration: 0.7, ease: EASE }}
+      className="space-y-8"
     >
-      {/* Left sidebar — agent list */}
-      <div className="lg:col-span-2 flex flex-col gap-1.5">
-        {agents.map((agent, i) => {
-          const Icon = agent.icon
+      <div className="flex flex-wrap gap-2 justify-center">
+        {agentLayers.map((layer, i) => {
+          const Icon = layer.icon
           const isActive = active === i
           return (
             <button
-              key={agent.name}
+              key={layer.key}
               onClick={() => setActive(i)}
-              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all duration-200 group ${
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 isActive
-                  ? "bg-card border border-primary/25 shadow-sm"
-                  : "hover:bg-card/60 border border-transparent"
+                  ? "bg-foreground text-background border border-foreground"
+                  : "bg-transparent text-muted-foreground border border-border hover:text-foreground hover:border-foreground/40"
               }`}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-                isActive ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground group-hover:text-foreground"
-              }`}>
-                <Icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium truncate ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
-                  {agent.name}
-                </p>
-              </div>
-              {agent.badge && (
-                <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full flex-shrink-0">
-                  Demo
-                </span>
-              )}
-              {isActive && (
-                <div className="w-1 h-5 rounded-full bg-primary flex-shrink-0" />
-              )}
+              <Icon className="w-4 h-4" />
+              {layer.label}
+              <span className="text-[10px] font-mono tabular-nums opacity-60">{layer.index}</span>
             </button>
           )
         })}
       </div>
 
-      {/* Right content panel */}
       <motion.div
         key={active}
-        initial={{ opacity: 0, x: 10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.25 }}
-        className="lg:col-span-3 bg-card border border-border rounded-2xl p-8 flex flex-col"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+        className="rounded-2xl border border-border bg-card p-8 lg:p-12"
       >
-        {/* Header */}
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-            <ActiveIcon className="w-6 h-6" />
-          </div>
+        <div className="grid lg:grid-cols-[1fr_1.4fr] gap-8 lg:gap-16">
           <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <h3 className="text-xl font-bold tracking-tight text-foreground">{activeAgent.name}</h3>
-              {activeAgent.badge && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  {activeAgent.badge}
+            <div className="w-12 h-12 rounded-xl bg-foreground/5 text-foreground flex items-center justify-center mb-5 border border-border">
+              <ActiveIcon className="w-5 h-5" />
+            </div>
+            <p className="text-[10px] font-mono tabular-nums text-muted-foreground tracking-widest mb-2">
+              / {current.index}
+            </p>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4 leading-tight">
+              {current.label}
+            </h3>
+            <p className="text-base text-muted-foreground leading-relaxed">{current.blurb}</p>
+          </div>
+          <div className="divide-y divide-border border-y border-border">
+            {current.agents.map((agent, i) => (
+              <motion.div
+                key={agent.name}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 + i * 0.08, ease: EASE }}
+                className="flex items-start gap-5 py-5"
+              >
+                <span className="text-[11px] font-mono tabular-nums text-muted-foreground tracking-wider w-8 pt-1">
+                  0{i + 1}
                 </span>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{activeAgent.description}</p>
-          </div>
-        </div>
-
-        {/* Capabilities */}
-        {activeAgent.capabilities && (
-          <div className="mb-6">
-            <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase mb-3">Capabilities</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {activeAgent.capabilities.map((cap) => (
-                <div key={cap} className="flex items-start gap-2.5 p-3 rounded-xl bg-secondary/50">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground leading-snug">{cap}</span>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-foreground mb-1">{agent.name}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{agent.line}</p>
                 </div>
-              ))}
-            </div>
+                <Plus className="w-3.5 h-3.5 text-muted-foreground mt-2 flex-shrink-0" />
+              </motion.div>
+            ))}
           </div>
-        )}
-
-        <div className="mt-auto pt-2">
-          <Link
-            href={activeAgent.link}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4"
-          >
-            See full use case
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
       </motion.div>
+    </motion.div>
+  )
+}
 
-      {/* Explore button below on mobile, below grid on desktop */}
-      <div className="lg:col-span-5 text-center mt-2">
-        <Button variant="outline" size="lg" asChild className="rounded-full px-8 bg-transparent">
-          <Link href="/use-cases">Explore all use cases</Link>
-        </Button>
+function IndustryTabs({ isInView }: { isInView: boolean }) {
+  const [active, setActive] = useState(0)
+  const ActiveIcon = industries[active].icon
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={fadeInUp}
+      transition={{ duration: 0.7, ease: EASE }}
+      className="space-y-8"
+    >
+      <div className="flex flex-wrap gap-2 justify-center">
+        {industries.map((ind, i) => {
+          const Icon = ind.icon
+          const isActive = active === i
+          return (
+            <button
+              key={ind.name}
+              onClick={() => setActive(i)}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                isActive
+                  ? "bg-foreground text-background border border-foreground"
+                  : "bg-transparent text-muted-foreground border border-border hover:text-foreground hover:border-foreground/40"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {ind.name}
+            </button>
+          )
+        })}
       </div>
+
+      <motion.div
+        key={active}
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+        className="rounded-2xl border border-border bg-card p-8 lg:p-12"
+      >
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+          <div className="flex-1">
+            <div className="w-12 h-12 rounded-xl bg-foreground/5 text-foreground flex items-center justify-center mb-5 border border-border">
+              <ActiveIcon className="w-5 h-5" />
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4 max-w-md leading-tight">
+              {industries[active].headline}
+            </h3>
+          </div>
+          <div className="flex-1 space-y-4">
+            {industries[active].points.map((point, i) => (
+              <motion.div
+                key={point}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 + i * 0.08, ease: EASE }}
+                className="flex items-start gap-4 pb-4 border-b border-border last:border-0 last:pb-0"
+              >
+                <span className="text-xs font-mono tabular-nums text-muted-foreground mt-1">0{i + 1}</span>
+                <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   )
 }
 
 export default function HomePage() {
-  const problemRef = useRef(null)
-  const deAgentsRef = useRef(null)
-  const analyticsRef = useRef(null)
-  const howItWorksRef = useRef(null)
-  const integrationsRef = useRef(null)
+  const diagramRef = useRef(null)
+  const statsRef = useRef(null)
+  const catalogRef = useRef(null)
+  const slmRef = useRef(null)
+  const enableRef = useRef(null)
+  const industriesRef = useRef(null)
+  const outcomesRef = useRef(null)
+  const trustRef = useRef(null)
 
-  const problemInView = useInView(problemRef, { once: true, margin: "-100px" })
-  const deAgentsInView = useInView(deAgentsRef, { once: true, margin: "-100px" })
-  const analyticsInView = useInView(analyticsRef, { once: true, margin: "-100px" })
-  const howItWorksInView = useInView(howItWorksRef, { once: true, margin: "-100px" })
-  const integrationsInView = useInView(integrationsRef, { once: true, margin: "-100px" })
+  const diagramInView = useInView(diagramRef, { once: true, margin: "-100px" })
+  const statsInView = useInView(statsRef, { once: true, margin: "-100px" })
+  const catalogInView = useInView(catalogRef, { once: true, margin: "-100px" })
+  const slmInView = useInView(slmRef, { once: true, margin: "-100px" })
+  const enableInView = useInView(enableRef, { once: true, margin: "-100px" })
+  const industriesInView = useInView(industriesRef, { once: true, margin: "-100px" })
+  const outcomesInView = useInView(outcomesRef, { once: true, margin: "-100px" })
+  const trustInView = useInView(trustRef, { once: true, margin: "-100px" })
+
+  const currentYear = new Date().getFullYear()
 
   return (
     <>
@@ -325,467 +403,681 @@ export default function HomePage() {
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6, ease: EASE }}
         className="min-h-screen"
       >
         {/* ── Hero ── */}
-        <section className="py-20 lg:py-28 px-4 border-b border-border/50 overflow-hidden">
+        <section className="relative py-16 lg:py-20 px-4 border-b border-border/50 overflow-hidden">
           <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-              {/* Left: copy */}
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-10 lg:gap-16 items-center">
               <div>
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.1 }}
-                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground tracking-tighter mb-6 leading-[1.05]"
+                  transition={{ duration: 0.6, ease: EASE }}
+                  className="inline-flex items-center gap-4 mb-8 font-mono text-[11px] tabular-nums text-muted-foreground tracking-wider"
                 >
-                  IoT Data is Messy.
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[var(--orange)]" />
+                    PLANT.FLOOR / BOARD.ROOM
+                  </span>
+                  <span className="w-4 h-px bg-border" />
+                  <span>// {currentYear}</span>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+                  className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tighter mb-10 leading-[1.03]"
+                >
+                  <span className="text-[var(--orange)]">Agentic</span> layers over
                   <br />
-                  <span className="text-muted-foreground">Great Analytics</span>
+                  <span className="text-muted-foreground">your entire</span>
                   <br />
-                  <span className="text-muted-foreground">Shouldn't Be.</span>
+                  <span className="text-muted-foreground">manufacturing stack.</span>
                 </motion.h1>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.25 }}
-                  className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg"
-                >
-                  ContextWeaver deploys <strong className="text-foreground">Data Engineering Agents</strong> that
-                  clean and structure raw IoT sensor data, then runs <strong className="text-foreground">Analytics Agents</strong> for
-                  RCA, troubleshooting, alarm management, and production intelligence on top of it.
-                </motion.p>
-
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
+                  transition={{ duration: 0.7, delay: 0.4, ease: EASE }}
                   className="flex flex-col sm:flex-row items-start gap-3"
                 >
-                  <Button size="lg" asChild className="btn-gradient rounded-full px-8 gap-2 group">
-                    <a href="https://calendly.com/yuvraj-s-bhadauria/30min" target="_blank" rel="noopener noreferrer">
-                      Book a demo
+                  <a
+                    href="https://calendly.com/yuvraj-s-bhadauria/30min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-stretch rounded-full bg-foreground text-background hover:bg-foreground/90 transition-colors overflow-hidden"
+                  >
+                    <span className="inline-flex items-center px-6 text-sm font-semibold">
+                      Schedule consultation
+                    </span>
+                    <span className="inline-flex items-center justify-center w-11 h-11 my-1.5 mr-1.5 rounded-full bg-[var(--orange)] text-[var(--orange-foreground)] group-hover:bg-[var(--orange)]/90 transition-colors">
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild className="rounded-full px-8 bg-transparent">
-                    <Link href="/use-cases">See use cases</Link>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
-                  className="mt-8 flex items-center gap-6"
-                >
-                  {[
-                    "No data migration required",
-                    "Read-only source connections",
-                    "Deploys in days",
-                  ].map((point, i) => (
-                    <motion.div
-                      key={point}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + i * 0.12 }}
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                      {point}
-                    </motion.div>
-                  ))}
+                    </span>
+                  </a>
+                  <Link
+                    href="#concepts"
+                    className="group inline-flex items-stretch rounded-full border border-border bg-transparent hover:border-foreground/40 transition-colors overflow-hidden"
+                  >
+                    <span className="inline-flex items-center px-6 py-3 text-sm font-semibold text-foreground">
+                      See how it works
+                    </span>
+                    <span className="inline-flex items-center justify-center w-11 h-11 my-1 mr-1 rounded-full bg-[var(--orange)] text-[var(--orange-foreground)] group-hover:bg-[var(--orange)]/90 transition-colors">
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </span>
+                  </Link>
                 </motion.div>
               </div>
 
-              {/* Right: animated analysis card */}
               <div className="relative flex items-center justify-center lg:justify-end">
-                <HeroAnalysisCard />
+                <HeroStackDiagram />
               </div>
-
             </div>
           </div>
         </section>
 
-        {/* ── Animated Stats ── */}
-        <AnimatedStats />
-
-        {/* ── The Problem ── */}
-        <section ref={problemRef} className="py-24 px-4 border-b border-border/50">
+        {/* ── Concept explainer (after hero) ── */}
+        <section id="concepts" ref={diagramRef} className="py-20 px-4 border-b border-border/50">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial="hidden"
-              animate={problemInView ? "visible" : "hidden"}
+              animate={diagramInView ? "visible" : "hidden"}
               variants={fadeInUp}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-14"
+              transition={{ duration: 0.7, ease: EASE }}
+              className="max-w-2xl mb-12"
             >
-              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
-                The problem
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5">
-                Why manufacturing analytics keeps failing
+              <SectionLabel index="01">The three layers we add</SectionLabel>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                Your systems stay.
+                <br />
+                <span className="text-muted-foreground">We add the layers that think.</span>
               </h2>
-              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Before any analytics can work, the data underneath has to be trustworthy. In most plants, it isn't.
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Over every system in your stack we deploy two thin layers: a
+                <strong className="text-foreground"> semantic layer</strong> that makes the system machine-readable
+                in your company's vocabulary, and an
+                <strong className="text-foreground"> agent application layer</strong> that acts on it. A cross-stack
+                layer connects the three, enabling agents that reason end-to-end.
               </p>
             </motion.div>
 
             <motion.div
-              initial="hidden"
-              animate={problemInView ? "visible" : "hidden"}
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden border border-border"
             >
-              {dataProblems.map((problem, i) => {
-                const Icon = problem.icon
+              {[
+                {
+                  icon: Layers,
+                  title: "Semantic layer",
+                  body: "Tag-to-asset graphs, unit conversions, SOP linkage, business terminology. The context every agent reads from.",
+                },
+                {
+                  icon: Sparkles,
+                  title: "Agent application layer",
+                  body: "Specialized agents for the work on that system — RCA on SCADA, OEE on MES, margin analytics on ERP.",
+                },
+                {
+                  icon: Network,
+                  title: "Cross-stack layer",
+                  body: "Agents that pull context from every layer below to reason end-to-end. One investigation, all three systems.",
+                },
+              ].map((item, i) => {
+                const Icon = item.icon
                 return (
-                  <motion.div
-                    key={problem.title}
-                    variants={fadeInUp}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    className="relative bg-card border border-border rounded-2xl p-8 flex flex-col gap-6 group hover:bg-secondary/30 transition-colors duration-300 overflow-hidden"
+                  <div
+                    key={item.title}
+                    className="bg-background p-7 flex flex-col gap-4 hover:bg-secondary/40 transition-colors duration-500"
                   >
-                    <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
-                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="w-5 h-5 text-foreground" />
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-foreground/5 text-foreground flex items-center justify-center border border-border">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-mono tabular-nums text-muted-foreground tracking-wider">
+                        / 0{i + 1}
+                      </span>
                     </div>
                     <div>
-                      <p className="text-5xl font-bold tracking-tight text-foreground leading-none mb-3">{problem.stat}</p>
-                      <p className="text-sm font-medium text-foreground mb-1">{problem.title}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{problem.statLabel}</p>
+                      <h3 className="text-base font-bold tracking-tight text-foreground mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 )
               })}
             </motion.div>
           </div>
         </section>
 
-        {/* ── RCA Demo Video ── */}
-        <section className="py-24 px-4 border-b border-border/50">
-          <div className="max-w-4xl mx-auto">
+        {/* ── Agents-at-work dashboard ── */}
+        <section className="py-20 px-4 border-b border-border/50">
+          <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-10"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="max-w-2xl mb-10"
             >
-              <span className="inline-block px-4 py-2 rounded-full border border-border text-sm font-medium text-foreground mb-5">
-                Live demo
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-                See the RCA Agent in action
+              <SectionLabel index="01.5">Agents at work</SectionLabel>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                The console your team
+                <br />
+                <span className="text-muted-foreground">watches each shift</span>
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Watch how the RCA Agent ingests messy sensor data, cleans it, and builds a traceable
-                root cause timeline in minutes, not hours.
+              <p className="text-base text-muted-foreground leading-relaxed">
+                KPIs streamed from the MES layer, sparklines from the SCADA layer, and an agent activity log from
+                the cross-stack layer — one console, all three.
               </p>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative aspect-video rounded-2xl overflow-hidden border border-border shadow-2xl"
-            >
-              <iframe
-                src="https://www.youtube.com/embed/Zjbc6QrF4A4"
-                title="RCA Agent Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </motion.div>
+            <AgentsAtWorkDashboard />
           </div>
         </section>
 
-        {/* ── Data Engineering Agents ── */}
-        <section
-          ref={deAgentsRef}
-          className="py-24 px-4 border-b border-border/50"
-        >
-          <div className="max-w-6xl mx-auto">
+        {/* ── Big stats row ── */}
+        <section ref={statsRef} className="py-16 lg:py-20 px-4 border-b border-border/50">
+          <div className="max-w-7xl mx-auto">
             <motion.div
               initial="hidden"
-              animate={deAgentsInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6 }}
-              className="mb-12"
-            >
-              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
-                Data Engineering Agents
-              </span>
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-lg">
-                  Build a data foundation you can trust
-                </h2>
-                <p className="text-base text-muted-foreground max-w-xs leading-relaxed md:text-right">
-                  Clean, normalize, and contextualize every sensor and tag automatically.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Asymmetric grid: 1 featured left + 2 stacked right */}
-            <motion.div
-              initial="hidden"
-              animate={deAgentsInView ? "visible" : "hidden"}
+              animate={statsInView ? "visible" : "hidden"}
               variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-5 gap-4"
+              className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-4"
             >
-              {/* Featured — Pipeline Builder */}
-              {(() => {
-                const agent = dataEngineeringAgents[0]
-                const Icon = agent.icon
-                return (
-                  <motion.div
-                    key={agent.name}
-                    variants={fadeInUp}
-                    transition={{ duration: 0.6 }}
-                    className="md:col-span-3"
-                  >
-                    <div className="card-hover h-full bg-gradient-to-br from-primary/8 via-primary/4 to-transparent border border-primary/20 rounded-2xl p-10 group relative overflow-hidden">
-                      <div className="absolute bottom-0 right-0 w-56 h-56 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-                      <div className="absolute top-0 left-0 w-32 h-32 rounded-full bg-primary/8 blur-2xl pointer-events-none" />
-                      <div className="w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <p className="text-xs font-semibold tracking-widest text-primary/70 uppercase mb-3">Featured</p>
-                      <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">{agent.name}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{agent.description}</p>
-                    </div>
-                  </motion.div>
-                )
-              })()}
-
-              {/* Two stacked cards */}
-              <div className="md:col-span-2 flex flex-col gap-4">
-                {dataEngineeringAgents.slice(1).map((agent, i) => {
-                  const Icon = agent.icon
-                  return (
-                    <motion.div
-                      key={agent.name}
-                      variants={fadeInUp}
-                      transition={{ duration: 0.6, delay: 0.1 + i * 0.1 }}
-                      className="flex-1"
-                    >
-                      <div className="card-hover h-full bg-card border border-border rounded-2xl p-7 group relative overflow-hidden">
-                        <div className="absolute bottom-0 right-0 w-24 h-24 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-primary/15 transition-all duration-300">
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <h3 className="text-lg font-bold tracking-tight text-foreground mb-2">{agent.name}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── Analytics Agents ── */}
-        <section ref={analyticsRef} className="py-24 px-4 border-b border-border/50 bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate={analyticsInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-14"
-            >
-              <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
-                Analytics & Intelligence Agents
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5">
-                RCA, troubleshooting, and production intelligence
-              </h2>
-              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Specialized agents for every manufacturing use case, from diagnosing a downtime event in minutes
-                to catching a quality deviation before it escapes the line.
-              </p>
-            </motion.div>
-
-            <AnalyticsAgentsTabs agents={analyticsAgents} isInView={analyticsInView} />
-          </div>
-        </section>
-
-        {/* ── How It Works ── */}
-        <section
-          ref={howItWorksRef}
-          className="py-20 px-4 border-b border-border/50 bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30"
-        >
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate={howItWorksInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">How it works</h2>
-              <p className="text-muted-foreground">From raw IoT data to reliable analytics in five steps.</p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              animate={howItWorksInView ? "visible" : "hidden"}
-              variants={staggerContainer}
-              className="flex flex-col sm:flex-row items-stretch gap-0"
-            >
-              {steps.map((item, i) => (
+              {heroStats.map((stat, i) => (
                 <motion.div
-                  key={item.step}
+                  key={stat.label}
                   variants={fadeInUp}
-                  transition={{ duration: 0.5, delay: i * 0.08 }}
-                  className="flex-1 flex flex-col items-center text-center px-4 py-6 relative group"
+                  transition={{ duration: 0.7, ease: EASE }}
+                  className="relative text-center px-4"
                 >
-                  {/* connector line */}
-                  {i < steps.length - 1 && (
-                    <div className="hidden sm:block absolute right-0 top-[38px] w-px h-6 bg-border -translate-y-1/2 translate-x-1/2 z-10" />
+                  {i > 0 && (
+                    <span className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 h-16 w-px bg-border" />
                   )}
-                  <div className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center text-sm font-bold mb-3 relative z-10">
-                    {item.step}
-                  </div>
-                  <p className="text-sm font-semibold text-foreground mb-1">{item.title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+                  <p className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-3">
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground max-w-[22ch] mx-auto leading-relaxed font-medium">
+                    {stat.label}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </section>
 
-        {/* ── Industry context with images ── */}
-        <section className="py-24 px-4 border-b border-border/50">
+        {/* ── Agent catalog by layer ── */}
+        <section ref={catalogRef} className="py-24 px-4 border-b border-border/50 bg-gradient-to-b from-background via-muted/20 to-background">
           <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial="hidden"
+              animate={catalogInView ? "visible" : "hidden"}
+              variants={fadeInUp}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="text-center mb-12"
+            >
+              <div className="flex justify-center">
+                <SectionLabel index="02">Offerings</SectionLabel>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                One catalog per layer
+              </h2>
+              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Each stack layer gets its own set of agents. Start with one, add more as the semantic layer
+                thickens and your team gets confident.
+              </p>
+            </motion.div>
+
+            <AgentCatalogTabs isInView={catalogInView} />
+          </div>
+        </section>
+
+        {/* ── SLM pillar ── */}
+        <section ref={slmRef} className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20 items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={slmInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, ease: EASE }}
+              >
+                <SectionLabel index="03">Small language models</SectionLabel>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                  Private models,
+                  <br />
+                  <span className="text-muted-foreground">fine-tuned on your plant.</span>
+                </h2>
+                <p className="text-base text-muted-foreground mb-8 leading-relaxed max-w-lg">
+                  Frontier APIs are fine for demos and dead wrong for operations: your tag schema, your SOPs, your
+                  batch records are not someone else's training data. We run small, specialized models on your
+                  hardware — tuned to the way your plant actually talks.
+                </p>
+
+                <div className="space-y-3">
+                  {slmPillars.map((p, i) => {
+                    const Icon = p.icon
+                    return (
+                      <motion.div
+                        key={p.title}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={slmInView ? { opacity: 1, x: 0 } : {}}
+                        transition={{ duration: 0.5, delay: 0.15 + i * 0.08, ease: EASE }}
+                        className="flex items-start gap-4 p-5 rounded-xl border border-border bg-card"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-foreground/5 border border-border text-foreground flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-base font-semibold text-foreground mb-1">{p.title}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </motion.div>
+
+              <LLMModelDiagram />
+            </div>
+          </div>
+        </section>
+
+        {/* ── Industrial reality image grid ── */}
+        <section className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <motion.div
-                initial={{ opacity: 0, x: -40 }}
+                initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="grid grid-cols-2 gap-3"
+                transition={{ duration: 0.7, ease: EASE }}
               >
-                {["/pic1.jpeg", "/pic2.jpeg", "/pic3.jpeg", "/pic4.jpeg"].map((src, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
-                    className="relative aspect-[4/3] rounded-2xl overflow-hidden"
-                  >
-                    <img
-                      src={src}
-                      alt="Manufacturing plant"
-                      className="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-foreground/30 via-transparent to-foreground/20" />
-                  </motion.div>
-                ))}
+                <SectionLabel index="03.5">Plant-floor reality</SectionLabel>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                  Built for the places
+                  <br />
+                  <span className="text-muted-foreground">where machines make money</span>
+                </h2>
+                <p className="text-base text-muted-foreground mb-6 leading-relaxed max-w-md">
+                  Our agents are designed for the realities of industrial environments — legacy control systems,
+                  brown-field integrations, alarm floods, and the shop-floor leaders who run the place. We don't
+                  ask you to change how the plant works; we add a layer that reads it.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    "Automotive & electronics",
+                    "Chemicals & refining",
+                    "Food & beverage",
+                    "Pharma & biotech",
+                  ].map((label) => (
+                    <div
+                      key={label}
+                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border bg-card/60"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--orange)]" />
+                      <span className="text-sm font-medium text-foreground">{label}</span>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: 40 }}
+                initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+                className="grid grid-cols-2 gap-3"
               >
-                <span className="inline-block text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-4">
-                  Built for the plant floor
-                </span>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-6">
-                  Where every minute of downtime costs money
-                </h2>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    Manufacturing plants run on thousands of sensors producing millions of readings per day.
-                    That data is an incredible asset when it's clean, contextual, and accessible.
-                  </p>
-                  <p>
-                    Most plants are nowhere near that. Engineers export CSVs, paste them into spreadsheets,
-                    and spend half the day just assembling the picture before they can start diagnosing.
-                  </p>
-                  <p>
-                    ContextWeaver was built for these environments to make the data infrastructure problem
-                    go away so your team can focus on the problem that matters: keeping operations running.
-                  </p>
-                </div>
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  {[
-                    { label: "Discrete manufacturing", icon: Cpu },
-                    { label: "Process industries", icon: FlaskConical },
-                    { label: "Food & beverage", icon: Zap },
-                    { label: "Oil, gas & chemicals", icon: TrendingUp },
-                  ].map(({ label, icon: Icon }, i) => (
-                    <motion.div
-                      key={label}
-                      initial={{ opacity: 0, y: 12 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border/50 hover:bg-secondary transition-colors"
-                    >
-                      <Icon className="w-4 h-4 text-foreground flex-shrink-0" />
-                      <span className="text-sm font-medium text-foreground">{label}</span>
-                    </motion.div>
-                  ))}
-                </div>
+                {[
+                  { src: "/pic1.jpeg", tall: true },
+                  { src: "/pic2.jpeg", tall: false },
+                  { src: "/pic3.jpeg", tall: false },
+                  { src: "/pic4.jpeg", tall: true },
+                ].map((img, i) => (
+                  <motion.div
+                    key={img.src}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: EASE }}
+                    className={`relative rounded-2xl overflow-hidden border border-border group ${
+                      img.tall ? "aspect-[4/5]" : "aspect-[4/5]"
+                    } ${i === 0 ? "mt-12" : ""}`}
+                  >
+                    <img
+                      src={img.src}
+                      alt="Manufacturing plant"
+                      className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
+                    <div className="absolute bottom-3 left-3 text-[10px] font-mono uppercase tracking-[0.2em] text-background/90">
+                      / 0{i + 1}
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* ── Integrations ── */}
-        <section ref={integrationsRef} className="py-20 px-4 border-b border-border/50 overflow-hidden">
-          <motion.div
-            initial="hidden"
-            animate={integrationsInView ? "visible" : "hidden"}
-            variants={fadeInUp}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-10"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
-              Connects to what you already run
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              No rip-and-replace. Native connectors for your existing industrial systems.
-            </p>
-          </motion.div>
-
-          {/* Marquee strip */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-            <div className="flex overflow-hidden">
-              <div className="animate-marquee flex gap-3 whitespace-nowrap">
-                {[...integrations, ...integrations].map((integration, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center px-5 py-2.5 rounded-full bg-secondary border border-border text-sm font-medium text-foreground flex-shrink-0"
-                  >
-                    {integration.name}
-                  </span>
-                ))}
+        {/* ── Enablement ── */}
+        <section ref={enableRef} className="py-24 px-4 border-b border-border/50 bg-foreground text-background">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={enableInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="max-w-2xl mb-14"
+            >
+              <div className="inline-flex items-center gap-3 text-[11px] font-medium tracking-[0.2em] text-background/60 uppercase mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--orange)]" />
+                <span className="font-mono tabular-nums">04</span>
+                <span className="w-6 h-px bg-background/30" />
+                <span>Enablement</span>
               </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-5 leading-[1.05]">
+                We build the first layer.
+                <br />
+                <span className="text-background/60">Your team builds the next one.</span>
+              </h2>
+              <p className="text-base text-background/70 leading-relaxed">
+                Agentic infrastructure is a compounding asset only if your people can extend it. As we ship the
+                initial agents, we train your leaders, general managers, and CDOs to build on the same semantic
+                layer — so the second wave of agents comes from inside the org.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  icon: GraduationCap,
+                  title: "Pair-building",
+                  body: "Every agent we ship is built side-by-side with someone on your team. The repo is yours; so is the review history.",
+                },
+                {
+                  icon: Users,
+                  title: "Leaders, GMs, CDOs",
+                  body: "Curriculum tuned for operational leaders — not just engineers. They drive the next-wave agent roadmap.",
+                },
+                {
+                  icon: Workflow,
+                  title: "Handover-first",
+                  body: "Semantic-layer ownership transfers as we deploy. By month six, your team is shipping agents without us.",
+                },
+              ].map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={enableInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: EASE }}
+                    className="rounded-2xl border border-background/15 bg-background/5 p-7 flex flex-col gap-5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-background/10 border border-background/20 flex items-center justify-center">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-mono tabular-nums text-background/50 tracking-wider">
+                        / 0{i + 1}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold tracking-tight mb-2">{item.title}</h3>
+                      <p className="text-sm text-background/70 leading-relaxed">{item.body}</p>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
           </div>
+        </section>
 
-          <div className="text-center mt-8">
-            <Link href="/architecture" className="text-sm font-medium text-foreground hover:underline underline-offset-4">
-              See the full architecture →
-            </Link>
+        {/* ── Industry tabs ── */}
+        <section ref={industriesRef} className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial="hidden"
+              animate={industriesInView ? "visible" : "hidden"}
+              variants={fadeInUp}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="text-center mb-12"
+            >
+              <div className="flex justify-center">
+                <SectionLabel index="05">Industry solutions</SectionLabel>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                Tuned to each layer,
+                <br />
+                <span className="text-muted-foreground">calibrated to your industry</span>
+              </h2>
+              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                The stack shape is the same. The agents, the semantic model, and the compliance posture change by
+                industry.
+              </p>
+            </motion.div>
+
+            <IndustryTabs isInView={industriesInView} />
+          </div>
+        </section>
+
+        {/* ── Signal flow strip ── */}
+        <section className="py-16 px-4 border-b border-border/50">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-6">
+              <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-muted-foreground">
+                Signal path · sensor → action
+              </p>
+            </div>
+            <SignalFlow />
+          </div>
+        </section>
+
+        {/* ── Outcomes carousel ── */}
+        <section ref={outcomesRef} className="py-24 border-b border-border/50 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.div
+              initial="hidden"
+              animate={outcomesInView ? "visible" : "hidden"}
+              variants={fadeInUp}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12"
+            >
+              <div>
+                <SectionLabel index="06">Outcomes</SectionLabel>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-xl leading-[1.05]">
+                  What the layers
+                  <br />
+                  <span className="text-muted-foreground">unlock in practice</span>
+                </h2>
+              </div>
+              <Link
+                href="/use-cases"
+                className="text-sm font-semibold text-foreground hover:underline underline-offset-4 inline-flex items-center gap-1.5"
+              >
+                See all use cases
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 pb-4" style={{ scrollbarWidth: "none" }}>
+              {outcomes.map((outcome, i) => (
+                <motion.div
+                  key={outcome.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={outcomesInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
+                  className="flex-shrink-0 w-[320px] sm:w-[360px] snap-start rounded-2xl border border-border bg-card p-7 flex flex-col gap-5"
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[11px] font-mono tabular-nums text-muted-foreground tracking-wider">
+                      / 0{i + 1}
+                    </span>
+                    <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                  </div>
+                  <div className="flex items-baseline gap-3">
+                    <p className="text-5xl font-bold tracking-tighter text-[var(--orange)]">{outcome.metric}</p>
+                  </div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+                    {outcome.metricLabel}
+                  </p>
+                  <div className="h-px bg-border" />
+                  <h3 className="text-lg font-semibold text-foreground leading-snug">{outcome.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed flex-1">{outcome.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Trust + testimonial ── */}
+        <section ref={trustRef} className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={trustInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: EASE }}
+            >
+              <SectionLabel index="07">Reliable by design</SectionLabel>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
+                Engineered for
+                <br />
+                <span className="text-muted-foreground">plant-floor reality</span>
+              </h2>
+              <p className="text-base text-muted-foreground mb-10 leading-relaxed">
+                No forced migrations, no ripping out your historian, no "move everything to our cloud." The stack
+                you run today is the substrate we build on.
+              </p>
+
+              <div className="divide-y divide-border border-y border-border">
+                {trustPoints.map((point, i) => (
+                  <motion.div
+                    key={point}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={trustInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 0.2 + i * 0.06, ease: EASE }}
+                    className="flex items-center gap-5 py-4"
+                  >
+                    <span className="text-[11px] font-mono tabular-nums text-muted-foreground tracking-wider w-6">
+                      0{i + 1}
+                    </span>
+                    <Plus className="w-3.5 h-3.5 text-foreground flex-shrink-0" />
+                    <span className="text-base text-foreground leading-relaxed">{point}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={trustInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+              className="relative rounded-2xl bg-foreground text-background p-10 lg:p-12"
+            >
+              <Quote className="w-10 h-10 text-background/20 mb-6" />
+              <p className="text-xl sm:text-2xl font-medium leading-relaxed mb-10">
+                We stopped arguing about whose data was right. The agents surface a single, evidence-backed
+                timeline — and the second wave of them came from our own team.
+              </p>
+              <div className="flex items-center gap-4 pt-6 border-t border-background/15">
+                <div className="w-11 h-11 rounded-full bg-background/10 border border-background/20 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-background" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Operations Director</p>
+                  <p className="text-xs text-background/60">Tier 1 supplier · Discrete manufacturing</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── Resources ── */}
+        <section className="py-24 px-4 border-b border-border/50">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
+            >
+              <div>
+                <SectionLabel index="08">Deeper reading</SectionLabel>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-xl leading-[1.05]">
+                  Layer notes &amp;
+                  <br />
+                  <span className="text-muted-foreground">architecture walkthroughs</span>
+                </h2>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  tag: "Architecture",
+                  title: "The semantic layer: what lives in it, and why every agent reads from it",
+                  description: "Tag-to-asset graphs, SOP corpora, unit systems — the shared vocabulary agents need to be useful.",
+                  link: "/architecture",
+                  icon: Layers,
+                },
+                {
+                  tag: "Use case",
+                  title: "A cross-stack investigation: one line-stop, all three layers",
+                  description: "How the RCA agent drew context from SCADA, MES, and ERP to produce one timeline before shift end.",
+                  link: "/use-cases#root-cause",
+                  icon: GitBranch,
+                },
+                {
+                  tag: "Security",
+                  title: "Why small language models on your infra beat frontier APIs",
+                  description: "Privacy, cost, and domain fit — the three reasons operations workloads don't go to public APIs.",
+                  link: "/security",
+                  icon: Shield,
+                },
+              ].map((post, i) => {
+                const Icon = post.icon
+                return (
+                  <motion.div
+                    key={post.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
+                    className="group rounded-2xl border border-border bg-card p-7 flex flex-col gap-5 hover:border-foreground/40 transition-colors duration-500"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                        {post.tag}
+                      </span>
+                      <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </div>
+                    <div className="h-px bg-border" />
+                    <h3 className="text-lg font-bold tracking-tight text-foreground leading-snug">{post.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">{post.description}</p>
+                    <Link
+                      href={post.link}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground"
+                    >
+                      Read full article
+                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </Link>
+                  </motion.div>
+                )
+              })}
+            </div>
           </div>
         </section>
 
         <CTABand
-          title="Ready to fix your data foundation?"
-          description="Tell us what systems you run and what outcomes matter most. We'll map the data engineering pipeline and first agent pack for your plant."
+          title="Ready to put layers over your stack?"
+          description="Tell us what you run today — SCADA, MES, ERP. We'll map the semantic layer, the first agent pack per layer, and the enablement plan for your team."
         />
       </motion.main>
       <Footer />

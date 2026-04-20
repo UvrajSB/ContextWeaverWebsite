@@ -37,9 +37,6 @@ export function Footer() {
                 </svg>
               </div>
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Data Engineering Agents that clean and structure IoT data from manufacturing plants, so your analytics actually work.
-            </p>
           </div>
 
           {/* Links */}
