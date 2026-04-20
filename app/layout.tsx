@@ -12,9 +12,9 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: "ContextWeaver - Data Engineering Agents for Manufacturing IoT",
+  title: "ContextWeaver",
   description:
-    "IoT data is messy. ContextWeaver builds data engineering agents that clean, structure, and contextualize sensor data from manufacturing plants, so your RCA, troubleshooting, and analytics tools actually work.",
+    "Agentic layers over your entire manufacturing stack. ContextWeaver builds semantic and agent-application layers on top of your SCADA, MES, and ERP systems — and trains your team to extend them.",
   generator: 'v0.app',
 }
 
