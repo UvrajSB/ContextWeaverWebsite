@@ -9,33 +9,24 @@ import {
   Building2,
   Layers,
   Sparkles,
-  ShieldCheck,
   Lock,
   Cog,
   GraduationCap,
   Users,
   BrainCircuit,
   Network,
-  GitBranch,
   Workflow,
   Plus,
   MapPin,
   Quote,
   TrendingUp,
-  Radar,
-  Shield,
-  Zap,
-  FlaskConical,
-  Gauge,
 } from "lucide-react"
 import { motion, useInView } from "framer-motion"
-import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CTABand } from "@/components/cta-band"
 import { HeroStackDiagram } from "@/components/hero-stack-diagram"
 import { AgentsAtWorkDashboard } from "@/components/agents-at-work-dashboard"
-import { SignalFlow } from "@/components/signal-flow"
 import { LLMModelDiagram } from "@/components/llm-model-diagram"
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -44,21 +35,6 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 },
 }
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-}
-
-const heroStats = [
-  { value: "3", label: "Stack layers covered" },
-  { value: "12+", label: "Domain agents out of the box" },
-  { value: "100%", label: "On-prem / VPC deployable" },
-  { value: "$0", label: "Per-token inference cost" },
-]
 
 // Agent catalog grouped by stack layer
 const agentLayers = [
@@ -108,49 +84,6 @@ const agentLayers = [
       { name: "Root Cause Agent", line: "SCADA + MES + ERP: traces incidents to process or supply cause" },
       { name: "Demand-to-Production", line: "ERP + MES: short-horizon plan updates as demand shifts" },
       { name: "Compliance Agent", line: "All layers: audit trails, evidence packs, deviation flags" },
-    ],
-  },
-]
-
-const industries = [
-  {
-    name: "Discrete Manufacturing",
-    icon: Cpu,
-    headline: "Automotive, electronics, assembly. Cycle time is the KPI.",
-    points: [
-      "SCADA layer: station-level drift and cycle timing",
-      "MES layer: first-pass yield + OEE by line and product",
-      "ERP layer: order-to-fulfil promise dates under disruption",
-    ],
-  },
-  {
-    name: "Process Industries",
-    icon: FlaskConical,
-    headline: "Continuous processes where one deviation costs a batch.",
-    points: [
-      "SCADA layer: alarm rationalization, excursion detection",
-      "MES layer: batch genealogy, quality escape isolation",
-      "ERP layer: yield-and-loss accounting to COGS",
-    ],
-  },
-  {
-    name: "Food &amp; Beverage",
-    icon: Zap,
-    headline: "High-SKU lines with strict sanitation and changeover demands.",
-    points: [
-      "SCADA layer: changeover sequence + CIP verification",
-      "MES layer: traceability across batches and lots",
-      "ERP layer: expiry-aware inventory and allocation",
-    ],
-  },
-  {
-    name: "Oil, Gas &amp; Chemicals",
-    icon: Gauge,
-    headline: "Safety-critical assets with heavy alarm loads and compliance scrutiny.",
-    points: [
-      "SCADA layer: EEMUA-191 KPIs, interlock sequence reconstruction",
-      "MES layer: campaign accounting, spec conformance",
-      "ERP layer: margin-aware production sequencing",
     ],
   },
 ]
@@ -307,91 +240,18 @@ function AgentCatalogTabs({ isInView }: { isInView: boolean }) {
   )
 }
 
-function IndustryTabs({ isInView }: { isInView: boolean }) {
-  const [active, setActive] = useState(0)
-  const ActiveIcon = industries[active].icon
-
-  return (
-    <motion.div
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={fadeInUp}
-      transition={{ duration: 0.7, ease: EASE }}
-      className="space-y-8"
-    >
-      <div className="flex flex-wrap gap-2 justify-center">
-        {industries.map((ind, i) => {
-          const Icon = ind.icon
-          const isActive = active === i
-          return (
-            <button
-              key={ind.name}
-              onClick={() => setActive(i)}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                isActive
-                  ? "bg-foreground text-background border border-foreground"
-                  : "bg-transparent text-muted-foreground border border-border hover:text-foreground hover:border-foreground/40"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {ind.name}
-            </button>
-          )
-        })}
-      </div>
-
-      <motion.div
-        key={active}
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: EASE }}
-        className="rounded-2xl border border-border bg-card p-8 lg:p-12"
-      >
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
-          <div className="flex-1">
-            <div className="w-12 h-12 rounded-xl bg-foreground/5 text-foreground flex items-center justify-center mb-5 border border-border">
-              <ActiveIcon className="w-5 h-5" />
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4 max-w-md leading-tight">
-              {industries[active].headline}
-            </h3>
-          </div>
-          <div className="flex-1 space-y-4">
-            {industries[active].points.map((point, i) => (
-              <motion.div
-                key={point}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 + i * 0.08, ease: EASE }}
-                className="flex items-start gap-4 pb-4 border-b border-border last:border-0 last:pb-0"
-              >
-                <span className="text-xs font-mono tabular-nums text-muted-foreground mt-1">0{i + 1}</span>
-                <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
 export default function HomePage() {
   const diagramRef = useRef(null)
-  const statsRef = useRef(null)
   const catalogRef = useRef(null)
   const slmRef = useRef(null)
   const enableRef = useRef(null)
-  const industriesRef = useRef(null)
   const outcomesRef = useRef(null)
   const trustRef = useRef(null)
 
   const diagramInView = useInView(diagramRef, { once: true, margin: "-100px" })
-  const statsInView = useInView(statsRef, { once: true, margin: "-100px" })
   const catalogInView = useInView(catalogRef, { once: true, margin: "-100px" })
   const slmInView = useInView(slmRef, { once: true, margin: "-100px" })
   const enableInView = useInView(enableRef, { once: true, margin: "-100px" })
-  const industriesInView = useInView(industriesRef, { once: true, margin: "-100px" })
   const outcomesInView = useInView(outcomesRef, { once: true, margin: "-100px" })
   const trustInView = useInView(trustRef, { once: true, margin: "-100px" })
 
@@ -577,37 +437,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Big stats row ── */}
-        <section ref={statsRef} className="py-16 lg:py-20 px-4 border-b border-border/50">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate={statsInView ? "visible" : "hidden"}
-              variants={staggerContainer}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-4"
-            >
-              {heroStats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  variants={fadeInUp}
-                  transition={{ duration: 0.7, ease: EASE }}
-                  className="relative text-center px-4"
-                >
-                  {i > 0 && (
-                    <span className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 h-16 w-px bg-border" />
-                  )}
-                  <p className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-3">
-                    {stat.value}
-                  </p>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground max-w-[22ch] mx-auto leading-relaxed font-medium">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
         {/* ── Agent catalog by layer ── */}
         <section ref={catalogRef} className="py-24 px-4 border-b border-border/50 bg-gradient-to-b from-background via-muted/20 to-background">
           <div className="max-w-6xl mx-auto">
@@ -680,84 +509,6 @@ export default function HomePage() {
               </motion.div>
 
               <LLMModelDiagram />
-            </div>
-          </div>
-        </section>
-
-        {/* ── Industrial reality image grid ── */}
-        <section className="py-24 px-4 border-b border-border/50">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, ease: EASE }}
-              >
-                <SectionLabel index="03.5">Plant-floor reality</SectionLabel>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
-                  Built for the places
-                  <br />
-                  <span className="text-muted-foreground">where machines make money</span>
-                </h2>
-                <p className="text-base text-muted-foreground mb-6 leading-relaxed max-w-md">
-                  Our agents are designed for the realities of industrial environments — legacy control systems,
-                  brown-field integrations, alarm floods, and the shop-floor leaders who run the place. We don't
-                  ask you to change how the plant works; we add a layer that reads it.
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    "Automotive & electronics",
-                    "Chemicals & refining",
-                    "Food & beverage",
-                    "Pharma & biotech",
-                  ].map((label) => (
-                    <div
-                      key={label}
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border bg-card/60"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--orange)]" />
-                      <span className="text-sm font-medium text-foreground">{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
-                className="grid grid-cols-2 gap-3"
-              >
-                {[
-                  { src: "/pic1.jpeg", tall: true },
-                  { src: "/pic2.jpeg", tall: false },
-                  { src: "/pic3.jpeg", tall: false },
-                  { src: "/pic4.jpeg", tall: true },
-                ].map((img, i) => (
-                  <motion.div
-                    key={img.src}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: EASE }}
-                    className={`relative rounded-2xl overflow-hidden border border-border group ${
-                      img.tall ? "aspect-[4/5]" : "aspect-[4/5]"
-                    } ${i === 0 ? "mt-12" : ""}`}
-                  >
-                    <img
-                      src={img.src}
-                      alt="Manufacturing plant"
-                      className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
-                    <div className="absolute bottom-3 left-3 text-[10px] font-mono uppercase tracking-[0.2em] text-background/90">
-                      / 0{i + 1}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
             </div>
           </div>
         </section>
@@ -835,46 +586,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Industry tabs ── */}
-        <section ref={industriesRef} className="py-24 px-4 border-b border-border/50">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate={industriesInView ? "visible" : "hidden"}
-              variants={fadeInUp}
-              transition={{ duration: 0.7, ease: EASE }}
-              className="text-center mb-12"
-            >
-              <div className="flex justify-center">
-                <SectionLabel index="05">Industry solutions</SectionLabel>
-              </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
-                Tuned to each layer,
-                <br />
-                <span className="text-muted-foreground">calibrated to your industry</span>
-              </h2>
-              <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                The stack shape is the same. The agents, the semantic model, and the compliance posture change by
-                industry.
-              </p>
-            </motion.div>
-
-            <IndustryTabs isInView={industriesInView} />
-          </div>
-        </section>
-
-        {/* ── Signal flow strip ── */}
-        <section className="py-16 px-4 border-b border-border/50">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-6">
-              <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-muted-foreground">
-                Signal path · sensor → action
-              </p>
-            </div>
-            <SignalFlow />
-          </div>
-        </section>
-
         {/* ── Outcomes carousel ── */}
         <section ref={outcomesRef} className="py-24 border-b border-border/50 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4">
@@ -886,7 +597,7 @@ export default function HomePage() {
               className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12"
             >
               <div>
-                <SectionLabel index="06">Outcomes</SectionLabel>
+                <SectionLabel index="05">Outcomes</SectionLabel>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-xl leading-[1.05]">
                   What the layers
                   <br />
@@ -944,7 +655,7 @@ export default function HomePage() {
               animate={trustInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, ease: EASE }}
             >
-              <SectionLabel index="07">Reliable by design</SectionLabel>
+              <SectionLabel index="06">Reliable by design</SectionLabel>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-5 leading-[1.05]">
                 Engineered for
                 <br />
@@ -995,83 +706,6 @@ export default function HomePage() {
                 </div>
               </div>
             </motion.div>
-          </div>
-        </section>
-
-        {/* ── Resources ── */}
-        <section className="py-24 px-4 border-b border-border/50">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: EASE }}
-              className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
-            >
-              <div>
-                <SectionLabel index="08">Deeper reading</SectionLabel>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground max-w-xl leading-[1.05]">
-                  Layer notes &amp;
-                  <br />
-                  <span className="text-muted-foreground">architecture walkthroughs</span>
-                </h2>
-              </div>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                {
-                  tag: "Architecture",
-                  title: "The semantic layer: what lives in it, and why every agent reads from it",
-                  description: "Tag-to-asset graphs, SOP corpora, unit systems — the shared vocabulary agents need to be useful.",
-                  link: "/architecture",
-                  icon: Layers,
-                },
-                {
-                  tag: "Use case",
-                  title: "A cross-stack investigation: one line-stop, all three layers",
-                  description: "How the RCA agent drew context from SCADA, MES, and ERP to produce one timeline before shift end.",
-                  link: "/use-cases#root-cause",
-                  icon: GitBranch,
-                },
-                {
-                  tag: "Security",
-                  title: "Why small language models on your infra beat frontier APIs",
-                  description: "Privacy, cost, and domain fit — the three reasons operations workloads don't go to public APIs.",
-                  link: "/security",
-                  icon: Shield,
-                },
-              ].map((post, i) => {
-                const Icon = post.icon
-                return (
-                  <motion.div
-                    key={post.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
-                    className="group rounded-2xl border border-border bg-card p-7 flex flex-col gap-5 hover:border-foreground/40 transition-colors duration-500"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                        {post.tag}
-                      </span>
-                      <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    </div>
-                    <div className="h-px bg-border" />
-                    <h3 className="text-lg font-bold tracking-tight text-foreground leading-snug">{post.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">{post.description}</p>
-                    <Link
-                      href={post.link}
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground"
-                    >
-                      Read full article
-                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                  </motion.div>
-                )
-              })}
-            </div>
           </div>
         </section>
 
